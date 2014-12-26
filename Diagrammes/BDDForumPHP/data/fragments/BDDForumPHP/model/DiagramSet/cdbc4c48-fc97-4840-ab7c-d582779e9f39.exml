@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="BDDForumPHP" version="3">
+  <DEPS>
+    <ID name="BDDForumPHP" mc="DiagramSet" uid="cdbc4c48-fc97-4840-ab7c-d582779e9f39"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="BDDForumPHP" mc="DiagramSet" uid="cdbc4c48-fc97-4840-ab7c-d582779e9f39"/>
+    <PID name="BDDForumPHP" mc="Project" uid="90d2ad54-1fa7-432f-9387-3c476bf0c081"/>
+    <ATTRIBUTES>
+      <ATT name="Name"><![CDATA[BDDForumPHP]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES></DEPENDENCIES>
+  </OBJECT>
+</EXT>

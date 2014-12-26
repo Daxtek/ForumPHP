@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Use Case Forum" version="3">
+  <DEPS>
+    <ID name="Use Case Forum" mc="Project" uid="7241d870-b31e-411a-86dd-7df19666d4f7"/>
+    <COMPID name="Use Case Forum" mc="DiagramSet" uid="5e90d55c-ca62-42bf-a752-1cd4c6aed778"/>
+    <COMPID name="use case forum" mc="Package" uid="4f231e88-8b82-4aa3-a362-6964860aaa53"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="Use Case Forum" mc="Project" uid="7241d870-b31e-411a-86dd-7df19666d4f7"/>
+    <ATTRIBUTES>
+      <ATT name="ProjectContext"></ATT>
+      <ATT name="ProjectDescr"></ATT>
+      <ATT name="Name"><![CDATA[Use Case Forum]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="DiagramRoot">
+        <COMPID name="Use Case Forum" mc="DiagramSet" uid="5e90d55c-ca62-42bf-a752-1cd4c6aed778"/>
+      </COMP>
+      <COMP relation="Model">
+        <COMPID name="use case forum" mc="Package" uid="4f231e88-8b82-4aa3-a362-6964860aaa53"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>
