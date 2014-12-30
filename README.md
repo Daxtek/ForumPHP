@@ -1,6 +1,6 @@
 
 Use case diagram :
-![Alt text](\Diagrammes\UseCaseScreenShot.png?raw=true "Use case diagram")
+![Alt text](\Diagrammes/UseCaseScreenShot.png?raw=true "Use case diagram")
 
 Tables de la BDD :
 
