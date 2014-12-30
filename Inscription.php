@@ -7,6 +7,7 @@
 	-->
 
 <?php 
+session_start(); // Autorise l'utilisation des variables de session
 
 //Initialisation des variables
 $errorMessage = '';
@@ -95,7 +96,7 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 		<label for="idprenom"> Prénom : </label><input type="text" id="idprenom" name="prenom" size="20" maxlength="100" pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ]{2,}" title="Veuillez renter un prénom contenant uniquement des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" required > <br>
 		<label for="idemail"> Email : </label><input type="email" id="idemail" name="email" maxlength="100" pattern="[0-9a-z-._]+@[a-z]+[.]+[a-z]{2,3}" title="Veuillez rentrez un email valide" required ><br>
 		<label for="idmdp"> Mot de passe : </label><input type="password" id="idmdp" name="mdp" required ><br>
-		<label for="idmdpConfirmation"> Comfirmer le mot de passe : </label><input type="password"  id="idmdpConfirmation" name="mdpConfirmation" required title="Les deux champs doivent correspondre" ><br>
+		<label for="idmdpConfirmation"> Confirmer le mot de passe : </label><input type="password"  id="idmdpConfirmation" name="mdpConfirmation" required title="Les deux champs doivent correspondre" ><br>
 		<label for="idpseudo"> Pseudonyme : </label><input type="text" id="idpseudo" name="pseudo" size="20" maxlength="20" required pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789]{2,}" title="Le pseudonyme peut contenir des chiffres et des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" ><br>
 		
 		<input type="submit" value="Valider">

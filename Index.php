@@ -7,12 +7,20 @@
 	</head>
 	<body>
 		<p> Bienvenue sur le forum !! </p>
-		<a href="Inscription.php">Page d'inscription </a>
+		<ul>
+			<li>
+				<a href="Inscription.php">Page d'inscription </a>
+			</li>
+			<li>
+				<a href="ConnexionSite.php">Page de connexion </a>
+			</li>	
+		</ul>
+		
 		
 	
 	</body>
 	<footer >
 	<!-- Pied de page avec le lien vers la déconnexion -->
-		<A HREF="Deconnexion.php?deco=<?php 'deconnecte' ?>"> Deconnexion </A> <!-- Lien qui envoie une variable -->
+		<A HREF="Deconnexion.php"> Deconnexion </A> 
 	</footer>
 </html>
