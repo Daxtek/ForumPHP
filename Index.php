@@ -11,4 +11,8 @@
 		
 	
 	</body>
+	<footer >
+	<!-- Pied de page avec le lien vers la déconnexion -->
+		<A HREF="Deconnexion.php?deco=<?php 'deconnecte' ?>"> Deconnexion </A> <!-- Lien qui envoie une variable -->
+	</footer>
 </html>
