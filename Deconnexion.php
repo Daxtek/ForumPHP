@@ -1,8 +1,14 @@
 <?php
 session_start(); //Autorise l'utilisation de tous ce qui touche aux sessions
 
-session_destroy(); //Détruit les variables de session
-
+if(isset($_SESSION['uid']))
+{
+	session_destroy(); //Détruit les variables de session
+}
+else
+{
+	header('Location: ./Index.php');
+}
 ?>
 <html lang="fr">
 <head>

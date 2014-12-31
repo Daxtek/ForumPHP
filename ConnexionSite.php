@@ -41,18 +41,21 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 		$uid = $row[$i]['uid']; // Récupère le numéro d'id de la personne
 		$recuppseudo = $row[$i]['Pseudonyme'];
 		$recupmdp = $row[$i]['Mot de passe'];
+		$admin = $row[$i]['Administrateur'];
+		echo $admin;
 		
 		// Si le pseudonyme existe déjà dans la BDD
 		if ($recuppseudo == $pseudo && $recupmdp == $mdp) 
 		{
-			// Créer les variables de sessions
+			// Créer les variables de sessions 
 			$_SESSION ['pseudo'] = $pseudo;
 			$_SESSION ['uid'] = $uid;
+			$_SESSION ['admin'] = $admin;
 			header ('Location: ./Index.php'); //Redirection vers la page d'accueil
 		} 
 		else 
 		{
-			$errorMessage = 'Vos identifiants sont faux';
+			$errorMessage = 'Vos identifiants sont faux'; //Message d'erreur
 		}
 	}
 }
@@ -74,7 +77,6 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 			<label for="idpseudo"> Pseudonyme : </label><input type="text" id="idpseudo" name="pseudo" size="20" maxlength="20" required><br>
 			<label for="idmdp"> Mot de passe : </label><input type="password" id="idmdp" name="mdp" required><br> <input type="submit" value="Valider">
 			<inputtype="reset" value="Reinitialiser" />
-	
 		</form>
 	
 	<?php 

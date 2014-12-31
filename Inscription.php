@@ -9,6 +9,14 @@
 <?php 
 session_start(); // Autorise l'utilisation des variables de session
 
+if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site )
+{
+	if(($_SESSION['admin']) == '0') //Si la personne qui est connecté n'est pas un administrateur alors elle ne put pas créer d'autres comptes
+	{
+		header('Location: ./Index.php'); //Redirection vers la page d'accueil
+	}
+}
+
 //Initialisation des variables
 $errorMessage = '';
 $messageInscription ='';
