@@ -1,3 +1,8 @@
+Reste à faire:
+	Stylsé les pages
+	Créer le formulaire de post
+	Créer une page pour ou sur la page d'acceuil afficher les catégories/sujets/posts
+	Créer l'option de fermeture/reouverture de sujet
 
 Use case diagram :
 ![Alt text](\Diagrammes/UseCaseScreenShot.png?raw=true "Use case diagram")

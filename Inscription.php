@@ -11,7 +11,7 @@ session_start(); // Autorise l'utilisation des variables de session
 
 if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site )
 {
-	if(($_SESSION['admin']) == '0') //Si la personne qui est connecté n'est pas un administrateur alors elle ne put pas créer d'autres comptes
+	if(($_SESSION['admin']) == '0') //Si la personne qui est connecté n'est pas un administrateur alors elle ne peut pas créer d'autres comptes
 	{
 		header('Location: ./Index.php'); //Redirection vers la page d'accueil
 	}
@@ -36,6 +36,7 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 	$pseudo=( $_POST ['pseudo']);
 	$mdp=( $_POST ['mdp']);
 	$mdpConfirmation=( $_POST ['mdpConfirmation']);
+	//Création de la date
 	$date = date('Y').'-'.date('m').'-'.date('d') ;
 	
 	//Vérification de l'existence du pseudonyme
@@ -77,10 +78,10 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 			$faute=true;
 		}		
 		
-	//Si l'ensemble des données sont correctes on ajoute le nouveau membre dans la table inscription
+	//Si l'ensemble des données sont correctes on ajoute le nouveau membre dans la table utilisateur
 		if($faute != true)
 		{
-			$sql="insert into utilisateur values ( '$pseudo', '$mdp', '$mail', '$date' ,	'0', '0', '' , '$nom' , '$prenom' ) ";
+			$sql="insert into utilisateur values ( '$pseudo', '$mdp', '$mail', '$date' ,	'0', '0', '' , '$nom' , '$prenom' ) "; //le champs vide est le champs de l'id qui est créer automatiquement
 			$statement = $pdo->query($sql);
 			$messageInscription = 'Vous êtes inscrit ! '. $pseudo;
 		}
@@ -109,8 +110,6 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 		
 		<input type="submit" value="Valider">
 		<input type="reset" value="Reinitialiser"/> 
-		
-		
 	</form>
 	
 	<?php 
