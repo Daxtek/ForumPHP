@@ -92,10 +92,30 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<link href="css/bootstrap.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="Inscription.css" />
 		<title> Page d'incscription</title>
 	</head>
 	<body>
+	<nav class="navbar navbar-inverse"><!-- Barre de navigation principal -->
+	     <div class="container">
+	     	<div class="navbar-header">
+	        	<a class="navbar-brand" href="Index.php">Forum PHP</a>
+	        </div>
+	        <div id="navbar" class="navbar-collapse collapse">
+	        	<?php 
+	        	if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site )
+				{
+					if(($_SESSION['admin']) == '1') 
+					{
+						echo '<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>';
+					}
+				}
+	        	?>
+				<a class="btn btn-primary navbar-btn navbar-right" href="Index.php"> Page d'accueil </a>
+	        </div>
+	   	</div>
+    </nav>
 		<header>
 		<h1> Formulaire d'inscription</h1>
 	</header>
@@ -122,7 +142,7 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 	</body>
 	<footer >
 	<!-- Pied de page avec le lien vers l'accueil -->
-		<A HREF="Index.php"> Page d'accueil </A>
+		<a class="btn btn-primary navbar-btn" href="Index.php"> Page d'accueil </a>
 	</footer>
 </html>
 <script>

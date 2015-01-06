@@ -6,8 +6,6 @@
 		Stylisé la page
 	-->
 
-
-
 <?php
 
 session_start(); // Autorise l'utilisation des variables de session
@@ -66,10 +64,22 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<link href="css/bootstrap.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="Inscription.css" />
 		<title>Page de connexion</title>
 	</head>
 	<body>
+		<nav class="navbar navbar-inverse"><!-- Barre de navigation principal -->
+		     <div class="container">
+		     	<div class="navbar-header">
+		        	<a class="navbar-brand" href="#">Forum PHP</a>
+		        </div>
+		        <div id="navbar" class="navbar-collapse collapse">
+					<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>
+					
+		        </div>
+		   	</div>
+	    </nav>
 		<header>
 			<h1>Formulaire de connexion</h1>
 		</header>

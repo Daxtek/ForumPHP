@@ -77,13 +77,25 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<link href="css/bootstrap.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="Inscription.css" />
 		<title> Création sujet</title>
 	</head>
 	<body>
+		<nav class="navbar navbar-inverse"><!-- Barre de navigation principal -->
+		     <div class="container">
+		     	<div class="navbar-header">
+		        	<a class="navbar-brand" href="Index.php">Forum PHP</a>
+		        </div>
+		        <div id="navbar" class="navbar-collapse collapse">
+					<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>
+					<a class="btn btn-primary navbar-btn navbar-right" href="Index.php"> Page d'accueil </a>
+		        </div>
+		   	</div>
+	    </nav>
 		<header>
-		<h1> Formulaire de création de sujet</h1>
-	</header>
+			<h1> Formulaire de création de sujet</h1>
+		</header>
 	<form name="formSujet" action="#" method="POST" onsubmit="return verifForm()">
 		
 		<label for="idtitre"> Titre : </label><input type="text" id="idtitre" name="titre" size="20" maxlength="50" pattern="[A-Z]+[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789 ]{2,}"" title="Veuillez renter un titre commencent par une majuscule, taille minimum 3 caractères" required > <br>
@@ -114,7 +126,7 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 	</body>
 	<footer >
 	<!-- Pied de page avec le lien vers l'accueil -->
-		<A HREF="Index.php"> Page d'accueil </A>
+		<a class="btn btn-primary navbar-btn" href="Index.php"> Page d'accueil </a>
 	</footer>
 </html>
 <script>

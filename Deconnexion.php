@@ -12,6 +12,7 @@ else
 ?>
 <html lang="fr">
 <head>
+	<link href="css/bootstrap.css" rel="stylesheet">
 	<meta charset="utf-8"/>
 <title>Deconnexion</title>
 </head>
