@@ -17,6 +17,7 @@ if(!isset($_SESSION['uid'])) //Si la variable de session n'a pas été créer ( 
 $errorMessage = '';
 $messageCreation = '';
 $faute = false;
+$nouveauSujet = false; // Boolean de vérification de la création du nouveau sujet
 
 //connexion db
 require("connexion.php");
@@ -41,9 +42,10 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 	
 	
 	//Vérification de l'existence du titre
-	$select = ("SELECT titre FROM sujet"); //Récupération des titres dans la BDD
+	$select = ("SELECT titre , cid FROM sujet WHERE cid=".$cid.""); //Récupération des titres dans la BDD
 	$statement = $pdo->query($select);
 	$tableauTitre = $statement->fetchAll(PDO::FETCH_ASSOC);
+	
 	
 	for($i = 0 ; $i < count($tableauTitre); $i++ ) //Parcours des titres
 	{
@@ -68,7 +70,32 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 		//le champs vide est le champs de l'id qui est créer automatiquement , 0000-00-00 corespond a la date de fermeture , 1 car le sujet et ouvert , les deux dernier 0 sont dans l'ordre le 1er et le dernier post
 		$sql="insert into sujet values ( '' , '$cid' , '$uid', '$date' , '0000-00-00' , '$titre' ,'$description' , '1' , '0' , '0') "; 
 		$statement = $pdo->query($sql);
-		$messageCreation = 'Le sujet '. $titre .' à été crée !';
+		
+		/*
+		 * Vérification que le sujet est bien ajouté dans la base ! 
+		 * C'est une double sécurité, bonne idée de l'appliquer partout ?
+		 */
+			$select = ("SELECT titre FROM sujet"); //Récupération des titres dans la BDD
+			$statement = $pdo->query($select);
+			$tableauTitreNouveau = $statement->fetchAll(PDO::FETCH_ASSOC);
+			
+			for($i = 0 ; $i < count($tableauTitreNouveau); $i++ ) //Parcours des titres
+			{
+				// Si le titre existe déjà dans la BDD
+				if ($tableauTitreNouveau[$i]['titre'] == $titre)
+				{
+					$nouveauSujet = true;
+				}
+			}
+			if ($nouveauSujet)
+			{
+				$messageCreation = 'Le sujet '. $titre .' à été crée !';
+			}
+			else 
+			{
+				$errorMessage .= " Il y a eu une erreur le sujet n'a pas été créer, veuillez réessayer";
+			}
+			
 	}
 }
 ?>
@@ -82,52 +109,55 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 		<title> Création sujet</title>
 	</head>
 	<body>
-		<nav class="navbar navbar-inverse"><!-- Barre de navigation principal -->
+		<nav class="navbar navbar-inverse navbar-fixed-top"><!-- Barre de navigation principal -->
 		     <div class="container">
 		     	<div class="navbar-header">
 		        	<a class="navbar-brand" href="Index.php">Forum PHP</a>
 		        </div>
 		        <div id="navbar" class="navbar-collapse collapse">
 					<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>
-					<a class="btn btn-primary navbar-btn navbar-right" href="Index.php"> Page d'accueil </a>
 		        </div>
 		   	</div>
 	    </nav>
+	    <section class="container"> <!-- Section central -->
 		<header>
 			<h1> Formulaire de création de sujet</h1>
 		</header>
-	<form name="formSujet" action="#" method="POST" onsubmit="return verifForm()">
-		
-		<label for="idtitre"> Titre : </label><input type="text" id="idtitre" name="titre" size="20" maxlength="50" pattern="[A-Z]+[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789 ]{2,}"" title="Veuillez renter un titre commencent par une majuscule, taille minimum 3 caractères" required > <br>
-		<label for="iddescrip"> Description : </label><textarea  id="iddescrip" name="description" rows="4" cols="50" maxlength="1000" title="Description de la catégorie"></textarea> <br>
-		<label for="iddescrip"> Catégorie : </label>
-			<select name="categorie">
-				<option value="select"> Sélectionnez la catégorie à laquelle le sujet appartient </option>  
-				<?php 
-					//Affiche les différents choix possible à l'aide d'une boucle 
-					for($i = 0 ; $i<count($categorie); $i++)
-					{
-						echo '<option value='. $categorie[$i]['cid']. '>'. $categorie[$i]['titre'] .'</option>'; 
-					}
-				?>
-			</select><br>
-		
-		<input type="submit" value="Valider">
-		<input type="reset" value="Reinitialiser"/> 
-	</form>
+		<form  name="formSujet" action="#" method="POST" onsubmit="return verifForm()">
+			
+			<label  for="idtitre"> Titre : </label><input class="form-control" type="text" id="idtitre" name="titre" size="20" maxlength="50" pattern="[A-Z]+[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789 ]{2,}"" title="Veuillez renter un titre commencent par une majuscule, taille minimum 3 caractères" required ><br>
+			<label  for="iddescrip"> Description : </label><textarea class="form-control"  id="iddescrip" name="description" rows="4" cols="50" maxlength="1000" title="Description de la catégorie"></textarea><br>
+			<label  for="iddescrip"> Catégorie : </label>
+			<select class="form-control" name="categorie">
+					<option value="select"> Sélectionnez la catégorie à laquelle le sujet appartient </option>  
+					<?php 
+						//Affiche les différents choix possible à l'aide d'une boucle 
+						for($i = 0 ; $i<count($categorie); $i++)
+						{
+							echo '<option value='. $categorie[$i]['cid']. '>'. $categorie[$i]['titre'] .'</option>'; 
+						}
+					?>
+				</select>
+				<br>
+			
+			<input class="btn btn-default" type="submit" value="Valider">
+			<input class="btn btn-default" type="reset" value="Reinitialiser"/> 
+		</form>
 	
-	<?php 
-		// Rencontre-t-on une erreur ?
-		if(!empty($errorMessage)) echo '<p>', htmlspecialchars($errorMessage) ,'</p>';
-		//Message du succès de la création du sujet
-		elseif(!empty($messageCreation)) echo '<p>', htmlspecialchars($messageCreation) ,'</p>';
-	?>
+		<?php 
+			// Rencontre-t-on une erreur ?
+			if(!empty($errorMessage)) echo '<p class="alert alert-danger">', htmlspecialchars($errorMessage) ,'</p>';
+			//Message du succès de la création du sujet
+			elseif(!empty($messageCreation)) echo '<p class="alert alert-success">', htmlspecialchars($messageCreation) ,'</p>';
+		?>
 	
-	</body>
-	<footer >
+	</section>
+	<footer class="container">
 	<!-- Pied de page avec le lien vers l'accueil -->
-		<a class="btn btn-primary navbar-btn" href="Index.php"> Page d'accueil </a>
+		<a class="btn btn-primary navbar-btn" href="Index.php"> Retour </a>
 	</footer>
+	</body>
+	
 </html>
 <script>
 	

@@ -62,10 +62,11 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 	<head>
 		<meta charset="UTF-8">
 		<link href="css/bootstrap.css" rel="stylesheet">
+		<link href="css/Index.css" rel="stylesheet">
 		<title> Accueil | Forum PHP </title>
 	</head>
-	<body>
-		<nav class="navbar navbar-inverse"><!-- Barre de navigation principal -->
+	<body >
+		<nav class="navbar navbar-inverse navbar-fixed-top"><!-- Barre de navigation principal -->
 	      <div class="container">
 	        <div class="navbar-header">
 	          <a class="navbar-brand" href="#">Forum PHP</a>
@@ -85,9 +86,25 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 				            <a class="btn btn-primary" href="Inscription.php">Inscription</a>
 			          	</form>';
 				}
-				else
+				else //Si la personne est connecté
 				{
-					echo '<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>';
+					if(($_SESSION['admin']) == '1') //Si la personne qui est connecté est pas un administrateur alors elle peut accéder à la création de catégorie
+					{
+						echo '<ul class="nav navbar-nav">';
+						echo '<li><a  href="Inscription.php"> Inscrire un nouvel utilisateur </a></li>';
+						echo '<li><a  href="CreationSujet.php"> Créer Sujet </a></li>';
+						echo '<li><a  href="CreationCategorie.php"> Créer Catégorie </a></li>';
+						echo '</ul>';
+						echo '<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>';
+					}
+					else //Si c'est un simple utilisateur
+					{
+						echo '<ul class="nav navbar-nav">';
+						echo '<li><a  href="CreationSujet.php"> Créer Sujet </a></li>';
+						echo '</ul>';
+						echo '<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>';
+					}
+
 				}
 			?> 
 	        </div>
@@ -104,7 +121,7 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 			</header>
 		<ul>
 			<?php
-				if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site )
+				/*if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site )
 				{
 					if(($_SESSION['admin']) == '1') //Si la personne qui est connecté est pas un administrateur alors elle peut accéder à la création de catégorie
 					{
@@ -123,7 +140,7 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 					{
 						echo '<li><a class="btn btn-primary" href="CreationCategorie.php">Créer Catégorie </a></li>	';
 					}
-				}
+				}*/
 			?>		
 		</ul>
 		<?php 

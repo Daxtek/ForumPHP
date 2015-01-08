@@ -12,6 +12,9 @@ html {
 }
 body {
   margin: 0;
+  /*Modification Dieudonné Loïc */
+  padding-top:50px
+  /* Fin de modification */
 }
 article,
 aside,
@@ -28,6 +31,7 @@ section,
 summary {
   display: block;
 }
+
 audio,
 canvas,
 progress,
@@ -4712,6 +4716,9 @@ a.thumbnail.active {
 }
 .alert {
   padding: 15px;
+  /** Modification Dieudonné Loïc */
+  	margin-top: 20px;
+  /** Fin de Modification */
   margin-bottom: 20px;
   border: 1px solid transparent;
   border-radius: 4px;

@@ -97,53 +97,54 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 		<title> Page d'incscription</title>
 	</head>
 	<body>
-	<nav class="navbar navbar-inverse"><!-- Barre de navigation principal -->
-	     <div class="container">
-	     	<div class="navbar-header">
-	        	<a class="navbar-brand" href="Index.php">Forum PHP</a>
-	        </div>
-	        <div id="navbar" class="navbar-collapse collapse">
-	        	<?php 
-	        	if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site )
-				{
-					if(($_SESSION['admin']) == '1') 
+		<nav class="navbar navbar-inverse navbar-fixed-top"><!-- Barre de navigation principal -->
+		     <div class="container">
+		     	<div class="navbar-header">
+		        	<a class="navbar-brand" href="Index.php">Forum PHP</a>
+		        </div>
+		        <div id="navbar" class="navbar-collapse collapse">
+		        	<?php 
+		        	if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site )
 					{
-						echo '<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>';
+						if(($_SESSION['admin']) == '1') 
+						{
+							echo '<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>';
+						}
 					}
-				}
-	        	?>
-				<a class="btn btn-primary navbar-btn navbar-right" href="Index.php"> Page d'accueil </a>
-	        </div>
-	   	</div>
-    </nav>
-		<header>
-		<h1> Formulaire d'inscription</h1>
-	</header>
-	<form name="formInscription" action="#" method="POST" onsubmit="return verifForm()">
+		        	?>
+		        </div>
+		   	</div>
+	    </nav>
+	    <section class="container"> <!-- Section central -->
+			<header>
+				<h1> Formulaire d'inscription</h1>
+			</header>
+			<form name="formInscription" action="#" method="POST" onsubmit="return verifForm()">
+				
+				<label for="idnom"> Nom : </label><input class="form-control" type="text" id="idnom" name="nom" size="20" maxlength="100" pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ]{2,}" title="Veuillez renter un nom contenant uniquement des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" required > <br>
+				<label for="idprenom"> Prénom : </label><input class="form-control" type="text" id="idprenom" name="prenom" size="20" maxlength="100" pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ]{2,}" title="Veuillez renter un prénom contenant uniquement des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" required > <br>
+				<label for="idemail"> Email : </label><input class="form-control" type="email" id="idemail" name="email" maxlength="100" pattern="[0-9a-z-._]+@[a-z]+[.]+[a-z]{2,3}" title="Veuillez rentrez un email valide" required ><br>
+				<label for="idmdp"> Mot de passe : </label><input class="form-control" type="password" id="idmdp" name="mdp" required ><br>
+				<label for="idmdpConfirmation"> Confirmer le mot de passe : </label><input class="form-control" type="password"  id="idmdpConfirmation" name="mdpConfirmation" required title="Les deux champs doivent correspondre" ><br>
+				<label for="idpseudo"> Pseudonyme : </label><input class="form-control" type="text" id="idpseudo" name="pseudo" size="20" maxlength="20" required pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789]{2,}" title="Le pseudonyme peut contenir des chiffres et des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" ><br>
+				
+				<input class="btn btn-default" type="submit" value="Valider">
+				<input class="btn btn-default" type="reset" value="Reinitialiser"/> 
+			</form>
 		
-		<label for="idnom"> Nom : </label><input type="text" id="idnom" name="nom" size="20" maxlength="100" pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ]{2,}" title="Veuillez renter un nom contenant uniquement des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" required > <br>
-		<label for="idprenom"> Prénom : </label><input type="text" id="idprenom" name="prenom" size="20" maxlength="100" pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ]{2,}" title="Veuillez renter un prénom contenant uniquement des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" required > <br>
-		<label for="idemail"> Email : </label><input type="email" id="idemail" name="email" maxlength="100" pattern="[0-9a-z-._]+@[a-z]+[.]+[a-z]{2,3}" title="Veuillez rentrez un email valide" required ><br>
-		<label for="idmdp"> Mot de passe : </label><input type="password" id="idmdp" name="mdp" required ><br>
-		<label for="idmdpConfirmation"> Confirmer le mot de passe : </label><input type="password"  id="idmdpConfirmation" name="mdpConfirmation" required title="Les deux champs doivent correspondre" ><br>
-		<label for="idpseudo"> Pseudonyme : </label><input type="text" id="idpseudo" name="pseudo" size="20" maxlength="20" required pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789]{2,}" title="Le pseudonyme peut contenir des chiffres et des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" ><br>
-		
-		<input type="submit" value="Valider">
-		<input type="reset" value="Reinitialiser"/> 
-	</form>
-	
-	<?php 
-		// Rencontre-t-on une erreur ?
-		if(!empty($errorMessage)) echo '<p>', htmlspecialchars($errorMessage) ,'</p>';
-		//Message du succès de l'inscription
-		elseif(!empty($messageInscription)) echo '<p>', htmlspecialchars($messageInscription) ,'</p>';
-	?>
-	
+		<?php 
+			// Rencontre-t-on une erreur ?
+			if(!empty($errorMessage)) echo '<p class="alert alert-danger">', htmlspecialchars($errorMessage) ,'</p>';
+			//Message du succès de l'inscription
+			elseif(!empty($messageInscription)) echo '<p class="alert alert-success">', htmlspecialchars($messageInscription) ,'</p>';
+		?>
+		</section>
+		<footer class="container">
+			<!-- Pied de page avec le lien vers l'accueil -->
+			<a class="btn btn-primary navbar-btn" href="Index.php"> Retour </a>
+		</footer>
 	</body>
-	<footer >
-	<!-- Pied de page avec le lien vers l'accueil -->
-		<a class="btn btn-primary navbar-btn" href="Index.php"> Page d'accueil </a>
-	</footer>
+	
 </html>
 <script>
 	
