@@ -1,24 +1,13 @@
 <?php
 session_start(); //Autorise l'utilisation de tous ce qui touche aux sessions
 
-if(isset($_SESSION['uid']))
+if(isset($_SESSION['uid'])) //Si l'utilisateur est connecté
 {
 	session_destroy(); //Détruit les variables de session
+	header('Location: ./Index.php');
 }
 else
 {
 	header('Location: ./Index.php');
 }
 ?>
-<html lang="fr">
-<head>
-	<link href="css/bootstrap.css" rel="stylesheet">
-	<meta charset="utf-8"/>
-<title>Deconnexion</title>
-</head>
-<body>
-	<H1>Déconnexion </H1>
-	<p> Vous êtes déconnecté </p>
-	<A HREF="Index.php"> Page d'accueil </A>
-</body>
-</html>	

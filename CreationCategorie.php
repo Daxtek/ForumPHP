@@ -1,10 +1,5 @@
 <!-- Auteurs: DIEUDONNE Loïc, GAUVIN Thomas -->
 
-<!-- 
-	To do: 
-		
-		Stylisé la page
-	-->
 <?php
 session_start(); // Autorise l'utilisation des variables de session
 
@@ -55,9 +50,10 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car c'est le seul champs re
 	//Si l'ensemble des données sont correctes on ajoute la nouvelle catégorie dans la table categorie
 	if($faute != true)
 	{
+		//Insértion de la catégorie et ses données dans la base
 		$sql="insert into categorie values ( '' , '$titre', '$uid', '$date' , '$description' ) "; //le champs vide est le champs de l'id qui est créer automatiquement
 		$statement = $pdo->query($sql);
-		$messageCreation = 'La catégorie '. $titre .' à été crée !';
+		$messageCreation = 'La catégorie '. $titre .' à été crée !'; //Message de succées de création
 	}
 }
 ?>
@@ -93,20 +89,17 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car c'est le seul champs re
 			<input class="btn btn-default" type="submit" value="Valider">
 			<input class="btn btn-default" type="reset" value="Reinitialiser"/> 
 		</form>
-	
-	<?php 
-		// Rencontre-t-on une erreur ?
-		if(!empty($errorMessage)) echo '<p class="alert alert-danger">', htmlspecialchars($errorMessage) ,'</p>';
-		//Message du succès de la création
-		elseif(!empty($messageCreation)) echo '<p class="alert alert-success">', htmlspecialchars($messageCreation) ,'</p>';
-	?>
+	<?php if(!empty($errorMessage)):?> <!-- Rencontre-t-on une erreur ?  -->
+			<p class="alert alert-danger"> <?= htmlspecialchars($errorMessage) ?> </p>
+	<?php elseif(!empty($messageCreation)): ?><!-- Message du succès de la création --> 
+		<p class="alert alert-success"><?=  htmlspecialchars($messageCreation) ?> </p>
+	<?php endif;?>
 	</section>
 	<footer class="container">
 	<!-- Pied de page avec le lien vers l'accueil -->
 		<a class="btn btn-primary navbar-btn" href="Index.php"> Retour </a>
 	</footer>
-	</body>
-	
+	</body>	
 </html>
 <script>
 	

@@ -1,11 +1,5 @@
 <!-- Auteurs: DIEUDONNE Loïc, GAUVIN Thomas -->
 
-<!-- 
-	To do: 
-		
-		Stylisé la page
-	-->
-
 <?php 
 session_start(); // Autorise l'utilisation des variables de session
 
@@ -50,21 +44,22 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 			// Si le pseudonyme existe déjà dans la BDD 
 			if ($row[$i]['pseudonyme'] == $pseudo)
 			{
-				$errorMessage .= " Le pseudonyme que vous avez choisi existe déjà. ";
+				$errorMessage .= " Le pseudonyme que vous avez choisi existe déjà. "; // message d'erreur
 				$faute = true;
 			}
 		}
 		
 	//Vérification de l'existence du mail
+	
 		//Récupération des mails dans la BDD
 		$select = ("SELECT mail FROM utilisateur");
 		$statement = $pdo->query($select);
-		$row = $statement->fetchAll(PDO::FETCH_ASSOC);
+		$rowMail = $statement->fetchAll(PDO::FETCH_ASSOC);
 		
-		for($i = 0 ; $i < count($row); $i++ )
+		for($i = 0 ; $i < count($rowMail); $i++ ) //Parcours des mails de la BDD
 		{
 			// Si le mail existe déjà dans la BDD
-			if ($row[$i]['mail'] == $mail)
+			if ($rowMail[$i]['mail'] == $mail)
 			{
 				$errorMessage .= " Le mail que vous avez choisi existe déjà. ";
 				$faute = true;
@@ -81,12 +76,22 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 	//Si l'ensemble des données sont correctes on ajoute le nouveau membre dans la table utilisateur
 		if($faute != true)
 		{
+			//Insertion des données de l'utilisateur dans la base
 			$sql="insert into utilisateur values ( '$pseudo', '$mdp', '$mail', '$date' ,	'0', '0', '' , '$nom' , '$prenom' ) "; //le champs vide est le champs de l'id qui est créer automatiquement
 			$statement = $pdo->query($sql);
-			$messageInscription = 'Vous êtes inscrit ! '. $pseudo;
+			
+			//Personnalisation du message en fonction de si l'utilisateur est un administrateur ou non
+			if(isset($_SESSION['admin'])) 
+			{
+				$messageInscription ='Vous avez inscrit l\'utilisateur ' . $pseudo  ;
+			}
+			else
+			{
+				$messageInscription ='Vous êtes inscrit '. $pseudo;
+			}
 		}
-		
-} ?>
+} 
+?>
 
 <!DOCTYPE html>
 <html>
@@ -103,15 +108,11 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 		        	<a class="navbar-brand" href="Index.php">Forum PHP</a>
 		        </div>
 		        <div id="navbar" class="navbar-collapse collapse">
-		        	<?php 
-		        	if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site )
-					{
-						if(($_SESSION['admin']) == '1') 
-						{
-							echo '<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>';
-						}
-					}
-		        	?>
+		        	<?php if(isset($_SESSION['admin'])):?><!--  Si la variable de session a été créer ( si la personne est connectée au site ) -->
+						<?php if(($_SESSION['admin']) == '1') :?>
+							<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>
+						<?php endif;?>
+		        	<?php endif;?>
 		        </div>
 		   	</div>
 	    </nav>
@@ -131,20 +132,18 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 				<input class="btn btn-default" type="submit" value="Valider">
 				<input class="btn btn-default" type="reset" value="Reinitialiser"/> 
 			</form>
-		
-		<?php 
-			// Rencontre-t-on une erreur ?
-			if(!empty($errorMessage)) echo '<p class="alert alert-danger">', htmlspecialchars($errorMessage) ,'</p>';
-			//Message du succès de l'inscription
-			elseif(!empty($messageInscription)) echo '<p class="alert alert-success">', htmlspecialchars($messageInscription) ,'</p>';
-		?>
+		<!-- Messages d'alerte -->
+		<?php if(!empty($errorMessage)):?> <!-- Rencontre-t-on une erreur ?  -->
+				<p class="alert alert-danger"> <?= htmlspecialchars($errorMessage) ?> </p>
+		<?php elseif(!empty($messageCreation)): ?><!-- Message du succès de la création --> 
+			<p class="alert alert-success"><?=  htmlspecialchars($messageCreation) ?> </p>
+		<?php endif;?>
 		</section>
 		<footer class="container">
 			<!-- Pied de page avec le lien vers l'accueil -->
 			<a class="btn btn-primary navbar-btn" href="Index.php"> Retour </a>
 		</footer>
 	</body>
-	
 </html>
 <script>
 	
@@ -182,7 +181,6 @@ function verifForm()
 		return false; //Empeche le submit si les vérifications ne sont pas valides
 	}
 }	
-
 </script>
 
 

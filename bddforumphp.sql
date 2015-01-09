@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 30, 2014 at 02:51 PM
+-- Generation Time: Jan 09, 2015 at 09:53 AM
 -- Server version: 5.6.17-log
 -- PHP Version: 5.5.12
 
@@ -23,17 +23,28 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `catégorie`
+-- Table structure for table `categorie`
 --
 
-CREATE TABLE IF NOT EXISTS `catégorie` (
+CREATE TABLE IF NOT EXISTS `categorie` (
   `cid` int(11) NOT NULL AUTO_INCREMENT,
   `Titre` varchar(50) CHARACTER SET utf8 NOT NULL,
   `uid` int(11) NOT NULL,
   `Date de creation` date NOT NULL,
   `Description` text CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`cid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+
+--
+-- Dumping data for table `categorie`
+--
+
+INSERT INTO `categorie` (`cid`, `Titre`, `uid`, `Date de creation`, `Description`) VALUES
+(3, 'Programation', 14, '2015-01-02', 'Viens discuter de programmation informatique !'),
+(4, 'Serie TV', 14, '2015-01-02', 'Viens discuter de sÃ©rie TÃ©lÃ© '),
+(5, 'Films', 14, '2015-01-02', 'Discutons de film !'),
+(8, 'Test', 14, '2015-01-08', 'une catÃ©gorie de test'),
+(9, 'Autre test', 14, '2015-01-08', 'un autre test');
 
 -- --------------------------------------------------------
 
@@ -69,7 +80,23 @@ CREATE TABLE IF NOT EXISTS `sujet` (
   `Premier post` int(11) NOT NULL COMMENT 'pid du premier post',
   `Dernier post` int(11) NOT NULL COMMENT 'pid du dernier post',
   PRIMARY KEY (`sid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+
+--
+-- Dumping data for table `sujet`
+--
+
+INSERT INTO `sujet` (`sid`, `cid`, `uid`, `Date de création`, `Date de fermeture`, `Titre`, `Description`, `Statut`, `Premier post`, `Dernier post`) VALUES
+(1, 1, 14, '2015-01-02', '0000-00-00', 'Test', 'test', 1, 0, 0),
+(2, 3, 12, '2015-01-02', '0000-00-00', 'PHP', 'On parle de PHP', 1, 0, 0),
+(5, 3, 12, '2015-01-02', '0000-00-00', 'Java', 'Test', 1, 0, 0),
+(6, 2, 14, '2015-01-08', '0000-00-00', 'Un sujet test', 'test', 1, 0, 0),
+(7, 1, 14, '2015-01-08', '0000-00-00', 'Un autre sujet de test', 'Encore un test', 1, 0, 0),
+(8, 6, 14, '2015-01-08', '0000-00-00', 'Encore un test pour le fun', 'youpii', 1, 0, 0),
+(9, 1, 14, '2015-01-08', '0000-00-00', 'Java', '', 1, 0, 0),
+(11, 2, 14, '2015-01-08', '0000-00-00', 'Java', '', 1, 0, 0),
+(12, 3, 14, '2015-01-08', '0000-00-00', 'Test', 'test', 1, 0, 0),
+(13, 4, 14, '2015-01-08', '0000-00-00', 'Test', 'un sujet de test', 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -88,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `Nom` varchar(100) CHARACTER SET utf8 NOT NULL,
   `Prenom` varchar(100) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 --
 -- Dumping data for table `utilisateur`
@@ -96,7 +123,11 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
 
 INSERT INTO `utilisateur` (`Pseudonyme`, `Mot de passe`, `Mail`, `Date d'inscription`, `Nombre de post`, `Administrateur`, `uid`, `Nom`, `Prenom`) VALUES
 ('test', 'test', 'sdfsdf', '2014-12-26', 0, 0, 1, 'test', 'test'),
-('george', 'test', 'test@test.fr', '2014-12-30', 0, 0, 3, 'test', 'test');
+('az', 'az', 'az@az.fr', '2014-12-30', 0, 0, 5, 'a', 'az'),
+('george', 'az', 'test@test.fr', '2014-12-30', 0, 0, 12, 'aa', 'az'),
+('george412', 'az', 'aze@aze.fr', '2014-12-30', 0, 0, 13, 'aa', 'aa'),
+('Ploutch', 'azerty', 'dieudonne.loic@gmail.com', '2015-01-02', 0, 1, 14, 'Loïc', 'Dieudonné'),
+('JeanMich', 'azerty', 'lol@lol.fr', '2015-01-08', 0, 0, 15, 'Jean', 'Mich');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

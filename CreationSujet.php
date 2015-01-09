@@ -1,10 +1,5 @@
 <!-- Auteurs: DIEUDONNE Loïc, GAUVIN Thomas -->
 
-<!-- 
-	To do: 
-		
-		Stylisé la page
-	-->
 <?php
 session_start(); // Autorise l'utilisation des variables de session
 
@@ -87,15 +82,14 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 					$nouveauSujet = true;
 				}
 			}
-			if ($nouveauSujet)
+			if ($nouveauSujet) //Si le nouveau sujet existe dans la BDD 
 			{
-				$messageCreation = 'Le sujet '. $titre .' à été crée !';
+				$messageCreation = 'Le sujet '. $titre .' à été crée !'; //Message de succés
 			}
 			else 
 			{
-				$errorMessage .= " Il y a eu une erreur le sujet n'a pas été créer, veuillez réessayer";
+				$errorMessage .= " Il y a eu une erreur le sujet n'a pas été créer, veuillez réessayer"; //Message d'erreur
 			}
-			
 	}
 }
 ?>
@@ -124,33 +118,25 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 			<h1> Formulaire de création de sujet</h1>
 		</header>
 		<form  name="formSujet" action="#" method="POST" onsubmit="return verifForm()">
-			
 			<label  for="idtitre"> Titre : </label><input class="form-control" type="text" id="idtitre" name="titre" size="20" maxlength="50" pattern="[A-Z]+[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789 ]{2,}"" title="Veuillez renter un titre commencent par une majuscule, taille minimum 3 caractères" required ><br>
 			<label  for="iddescrip"> Description : </label><textarea class="form-control"  id="iddescrip" name="description" rows="4" cols="50" maxlength="1000" title="Description de la catégorie"></textarea><br>
 			<label  for="iddescrip"> Catégorie : </label>
 			<select class="form-control" name="categorie">
 					<option value="select"> Sélectionnez la catégorie à laquelle le sujet appartient </option>  
-					<?php 
-						//Affiche les différents choix possible à l'aide d'une boucle 
-						for($i = 0 ; $i<count($categorie); $i++)
-						{
-							echo '<option value='. $categorie[$i]['cid']. '>'. $categorie[$i]['titre'] .'</option>'; 
-						}
-					?>
+					<?php for($i = 0 ; $i<count($categorie); $i++) : ?> <!-- Affiche les différents choix possible à l'aide d'une boucle  -->
+						<option value=<?= $categorie[$i]['cid']?>><?=  $categorie[$i]['titre'] ?> </option> 
+					<?php endfor;?>
 				</select>
 				<br>
 			
 			<input class="btn btn-default" type="submit" value="Valider">
 			<input class="btn btn-default" type="reset" value="Reinitialiser"/> 
 		</form>
-	
-		<?php 
-			// Rencontre-t-on une erreur ?
-			if(!empty($errorMessage)) echo '<p class="alert alert-danger">', htmlspecialchars($errorMessage) ,'</p>';
-			//Message du succès de la création du sujet
-			elseif(!empty($messageCreation)) echo '<p class="alert alert-success">', htmlspecialchars($messageCreation) ,'</p>';
-		?>
-	
+		<?php if(!empty($errorMessage)):?> <!-- Rencontre-t-on une erreur ?  -->
+				<p class="alert alert-danger"> <?= htmlspecialchars($errorMessage) ?> </p>
+		<?php elseif(!empty($messageCreation)): ?><!-- Message du succès de la création --> 
+			<p class="alert alert-success"><?=  htmlspecialchars($messageCreation) ?> </p>
+		<?php endif;?>
 	</section>
 	<footer class="container">
 	<!-- Pied de page avec le lien vers l'accueil -->

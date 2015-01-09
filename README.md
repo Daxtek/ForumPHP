@@ -1,12 +1,15 @@
 Reste à faire:
 --
-	- Stylsé les pages
-	- Créer le formulaire de post
-	- Créer une page pour, ou sur la page d'acceuil, afficher les catégories/sujets/posts
+	- Faire en sort qu'on puisse pas créer un sujet si il n'y a pas de catégorie
+	- reposter la BDD
+	- Améliorer la page de sujet
+	- Créer le formulaire de post et l'ajouter sur la page de sujet
 	- Créer l'option de fermeture/reouverture de sujet
-	- Appliquer partout la double sécurité de sujet
+	- Appliquer partout la double sécurité de sujet ???
 	- Bien tout remettre au propore et commenté
 	
+Diagrammes
+--	
 
 Use case diagram :
 ![Alt text](\Diagrammes/UseCaseScreenShot.png?raw=true "Use case diagram")
