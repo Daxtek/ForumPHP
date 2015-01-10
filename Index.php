@@ -1,59 +1,39 @@
-<!-- Auteurs: DIEUDONNE Loïc, GAUVIN Thomas -->
+<?php
 
-<?php 
+require('init-page.php');
 
-session_start(); //Permet d'utiliser les sessions et leur variables
+// Récupération des catégories et des sujets
+$forum = $Requests->getCategoriesAndSujets();
 
-//Initialisation des variables
-$errorMessage = '';
-$faute = false;
+// ==== Formulaire de connexion
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-//connexion db
-require("connexion.php");
-$pdo=connect_bd();
-
-$select = ("SELECT titre , description , cid FROM categorie"); //Récupération des catégories dans la BDD
-$statement = $pdo->query($select);
-$categorie = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-$select = ("SELECT titre , description , cid FROM sujet"); //Récupération des catégories dans la BDD
-$statement = $pdo->query($select);
-$sujet = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-
-$select = ("SELECT * FROM utilisateur"); // Récupération des données de la table utilisateur
-$statement = $pdo->query ( $select );
-$utilisateur = $statement->fetchAll ( PDO::FETCH_ASSOC );
-
-// Vérification du formulaire une fois que celui-ci est rempli
-if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont requis ( required )
-{
-	// Récupération des données du formulaire
-	$pseudo = ($_POST ['pseudo']);
-	$mdp = ($_POST ['mdp']);
-
-	for($i=0; $i<count($utilisateur); $i++)
-	{
-		$uid = $utilisateur[$i]['uid']; // Récupère le numéro d'id de la personne
-		$recuppseudo = $utilisateur[$i]['Pseudonyme'];
-		$recupmdp = $utilisateur[$i]['Mot de passe'];
-		$admin = $utilisateur[$i]['Administrateur'];
-			
-			// Si le pseudonyme existe déjà dans la BDD
-			if ($recuppseudo == $pseudo && $recupmdp == $mdp)
-			{
+	if (
+		isset($_POST['pseudo']) &&
+		!empty($_POST['pseudo']) &&
+		isset($_POST['mdp']) &&
+		!empty($_POST['mdp'])
+	) {
+		// Récupération des données du formulaire
+		$pseudo = ($_POST['pseudo']);
+		$mdp = ($_POST['mdp']);
+		$user = $Requests->userConnect($pseudo, $mdp);
+		// Si le pseudonyme existe déjà dans la BDD
+		if ($user) {
 			// Créer les variables de sessions
-				$_SESSION ['pseudo'] = $pseudo;
-				$_SESSION ['uid'] = $uid;
-				$_SESSION ['admin'] = $admin;
-				header ('Location: ./Index.php'); //Redirection vers la page d'accueil
-			}
-			else
-			{
-				$errorMessage = 'Vos identifiants sont faux'; //Message d'erreur
-			}
+			$_SESSION['pseudo'] = $user['Pseudonyme'];
+			$_SESSION['uid'] = $user['uid'];
+			$_SESSION['admin'] = $user['Administrateur'];
+			header ('Location: ./Index.php'); //Redirection vers la page d'accueil
+		}
+		else {
+			$errorMessage .= "Vos identifiants sont faux.\n"; //Message d'erreur
+		}
 	}
+	else
+		$errorMessage .= "Vos identifiants sont faux.\n";
 }
+
 
 ?>
 <!DOCTYPE html>
@@ -99,35 +79,35 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 			<?php endif; ?>
 	        </div>
 	      </div>
-    </nav>
+    	</nav>
 		
-		<?php if(!empty($errorMessage)):?> <!-- Rencontre-t-on une erreur ?  -->
-				<p class="alert alert-danger"> <?= htmlspecialchars($errorMessage) ?> </p>
+		<?php if(!empty($errorMessage)):?>
+			<p class="alert alert-danger"> <?= htmlspecialchars($errorMessage) ?> </p>
 		<?php endif;?>
+
+
 		<section class="container"> <!-- Section centrale -->
 			<header>
 				<h1> Bienvenue sur le forum !! </h1>
 			</header>
-		<?php for($i = 0 ; $i<count($categorie); $i++) 
-			{
-				$test = $categorie[$i]['cid'];
-				$select = ("SELECT titre , description , cid FROM sujet WHERE cid=".$test.""); //  Récupération des sujet dans la BDD
-				$statement = $pdo->query($select);
-				$sujet = $statement->fetchAll(PDO::FETCH_ASSOC); ?>
+		<?php foreach ($forum as $categorieKey => $categorie): ?>
 			<!-- Affichage des catégories -->
-					<section  class="panel panel-primary"> 
-						<div class="panel-heading">
-							<h1 class="panel-title" ><?= $categorie[$i]['titre']?></h1>
-						</div>
-							<p class="panel-body"><?= $categorie[$i]['description']?></p>
-										<ul class="list-group">
-						<!-- Affichage des sujets, premier jets -->
-						<?php for($j = 0 ; $j<count($sujet) ; $j++) :?>
-							<a href="Sujet.php?Titresujet=<?= $sujet[$j]['titre'] ?>" class="list-group-item"> <h4><?= $sujet[$j]['titre']?> :</h4><p> <?= $sujet[$j]['description'] ?></p> </a>			
-						<?php endfor;?>
-						</ul>
-				 </section>
-		<?php }?>
+			<section  class="panel panel-primary"> 
+				<div class="panel-heading">
+					<h1 class="panel-title" ><?= $categorie['Titre']?></h1>
+				</div>
+				<p class="panel-body"><?= $categorie['Description']?></p>
+								<ul class="list-group">
+				<!-- Affichage des sujets, premier jets -->
+				<?php foreach ($categorie['sujets'] as $sujetKey => $sujet): ?>
+					<a href="Sujet.php?Titresujet=<?= $sujet['Titre'] ?>" class="list-group-item">
+						<h4><?= $sujet['Titre']?> :</h4>
+						<p> <?= $sujet['Description'] ?></p>
+					</a>
+				<?php endforeach ?>
+				</ul>
+			 </section>
+		<?php endforeach ?>
 		</section>
 	</body>
 	<footer >

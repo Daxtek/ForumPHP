@@ -1,59 +1,51 @@
-<!-- Auteurs: DIEUDONNE Loïc, GAUVIN Thomas -->
-
 <?php
-session_start(); // Autorise l'utilisation des variables de session
+require('init-page.php');
 
-if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site )
+if(!isset($_SESSION['admin']) && !($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site ) et la personne qui est connecté n'est pas un administrateur alors elle ne peut pas créer d'autres catégories
 {
-	if(($_SESSION['admin']) == '0') //Si la personne qui est connecté n'est pas un administrateur alors elle ne peut pas créer d'autres catégories
-	{
-		header('Location: ./Index.php'); //Redirection vers la page d'accueil
-	}
+	header('Location: ./Index.php'); //Redirection vers la page d'accueil
 }
 
 //Initialisation des variables
-$errorMessage = '';
 $messageCreation = '';
 $faute = false;
 
-//connexion db
-require("connexion.php");
-$pdo=connect_bd();
-
 
 //Vérification du formulaire une fois que celui-ci est rempli
-if ( !empty( $_POST ['titre'])) // Uniquement $titre car c'est le seul champs requis ( required )
-{
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	//Récupération des données du formulaire
-	$titre=($_POST ['titre']);
-	$description=( $_POST ['description']);
-	//Création de la date
-	$date = date('Y').'-'.date('m').'-'.date('d') ;
-	//Récupération de l'id de l'utilisateur créateur de la catégorie
-	$uid = $_SESSION['uid'];
-	
-	//Vérification de l'existence du titre
-	$select = ("SELECT titre FROM categorie"); //Récupération des titres dans la BDD
-	$statement = $pdo->query($select); 
-	$row = $statement->fetchAll(PDO::FETCH_ASSOC);
-	
-	for($i = 0 ; $i < count($row); $i++ ) //Parcours des titres
-	{
-		// Si le titre existe déjà dans la BDD
-		if ($row[$i]['titre'] == $titre)
+	if (
+		isset($_POST['titre']) &&
+		!empty($_POST['titre']) &&
+		isset($_POST['description']) &&
+		!empty($_POST['description'])
+	) {
+
+		$titre = ($_POST ['titre']);
+		$description = ($_POST ['description']);
+		//Récupération de l'id de l'utilisateur créateur de la catégorie
+		$uid = $_SESSION['uid'];
+		
+		//Vérification de l'existence du titre
+		if ($Requests->titreCategorieExist($titre))
 		{
-			$errorMessage .= " La catégorie que vous voulez créer existe déjà. ";
+			$errorMessage .= "La catégorie que vous voulez créer existe déjà.\n";
 			$faute = true;
-		}
+		}	
+	}
+	else {
+		$errorMessage .= "Les données entrées ne sont pas correctes\n";
+		$faute = true;
 	}
 	
 	//Si l'ensemble des données sont correctes on ajoute la nouvelle catégorie dans la table categorie
-	if($faute != true)
+	if(!$faute)
 	{
 		//Insértion de la catégorie et ses données dans la base
-		$sql="insert into categorie values ( '' , '$titre', '$uid', '$date' , '$description' ) "; //le champs vide est le champs de l'id qui est créer automatiquement
-		$statement = $pdo->query($sql);
-		$messageCreation = 'La catégorie '. $titre .' à été crée !'; //Message de succées de création
+		if ($Requests->addCategorie($titre, $uid, $description))
+			$messageCreation = 'La catégorie '. $titre .' à été crée !'; //Message de succées de création
+		else
+			$errorMessage = "Une erreur est survenue lors de l'enregistrement";
 	}
 }
 ?>
