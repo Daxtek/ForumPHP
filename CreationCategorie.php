@@ -63,7 +63,7 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car c'est le seul champs re
 	<head>
 		<meta charset="UTF-8">
 		<link href="css/bootstrap.css" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="Inscription.css" />
+		<link rel="stylesheet" type="text/css" href="css/VerificationFormulaire.css" />
 		<title> Création catégorie</title>
 	</head>
 	<body>

@@ -98,7 +98,7 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 	<head>
 		<meta charset="UTF-8">
 		<link href="css/bootstrap.css" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="Inscription.css" />
+		<link rel="stylesheet" type="text/css" href="css/VerificationFormulaire.css" />
 		<title> Page d'incscription</title>
 	</head>
 	<body>

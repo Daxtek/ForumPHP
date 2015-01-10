@@ -1,3 +1,6 @@
+/** Auteurs: DIEUDONNE Loïc, GAUVIN Thomas */
+/**Feuille css qui colorise les input des formulaires en rouge si ils sont faux et vert si ils sont juste */
+
 /* Input Validation */
  
 	input[type]:valid 

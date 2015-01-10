@@ -70,19 +70,8 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 		 * Vérification que le sujet est bien ajouté dans la base ! 
 		 * C'est une double sécurité, bonne idée de l'appliquer partout ?
 		 */
-			$select = ("SELECT titre FROM sujet"); //Récupération des titres dans la BDD
-			$statement = $pdo->query($select);
-			$tableauTitreNouveau = $statement->fetchAll(PDO::FETCH_ASSOC);
 			
-			for($i = 0 ; $i < count($tableauTitreNouveau); $i++ ) //Parcours des titres
-			{
-				// Si le titre existe déjà dans la BDD
-				if ($tableauTitreNouveau[$i]['titre'] == $titre)
-				{
-					$nouveauSujet = true;
-				}
-			}
-			if ($nouveauSujet) //Si le nouveau sujet existe dans la BDD 
+			if ($statement) //Si l'insertion du sujet s'est bien faite donc si le nouveau post existe dans la BDD 
 			{
 				$messageCreation = 'Le sujet '. $titre .' à été crée !'; //Message de succés
 			}
@@ -99,7 +88,7 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 	<head>
 		<meta charset="UTF-8">
 		<link href="css/bootstrap.css" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="Inscription.css" />
+		<link rel="stylesheet" type="text/css" href="css/VerificationFormulaire.css" />
 		<title> Création sujet</title>
 	</head>
 	<body>
@@ -128,7 +117,6 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 					<?php endfor;?>
 				</select>
 				<br>
-			
 			<input class="btn btn-default" type="submit" value="Valider">
 			<input class="btn btn-default" type="reset" value="Reinitialiser"/> 
 		</form>
@@ -143,7 +131,6 @@ if ( !empty( $_POST ['titre'])) // Uniquement $titre car les autres champs neces
 		<a class="btn btn-primary navbar-btn" href="Index.php"> Retour </a>
 	</footer>
 	</body>
-	
 </html>
 <script>
 	

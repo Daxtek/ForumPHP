@@ -16,7 +16,7 @@ $select = ("SELECT titre , description , cid FROM categorie"); //Récupération 
 $statement = $pdo->query($select);
 $categorie = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-$select = ("SELECT titre , description , cid FROM sujet"); //Récupération des catégories dans la BDD
+$select = ("SELECT titre , description , cid  FROM sujet"); //Récupération des sujets dans la BDD
 $statement = $pdo->query($select);
 $sujet = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -25,7 +25,7 @@ $select = ("SELECT * FROM utilisateur"); // Récupération des données de la ta
 $statement = $pdo->query ( $select );
 $utilisateur = $statement->fetchAll ( PDO::FETCH_ASSOC );
 
-// Vérification du formulaire une fois que celui-ci est rempli
+// Vérification du formulaire de connexion une fois que celui-ci est rempli
 if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont requis ( required )
 {
 	// Récupération des données du formulaire
@@ -39,7 +39,6 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 		$recupmdp = $utilisateur[$i]['Mot de passe'];
 		$admin = $utilisateur[$i]['Administrateur'];
 			
-			// Si le pseudonyme existe déjà dans la BDD
 			if ($recuppseudo == $pseudo && $recupmdp == $mdp)
 			{
 			// Créer les variables de sessions
@@ -55,13 +54,28 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 	}
 }
 
+// Vérification du formulaire de fermeture de sujet une fois que celui-ci est rempli
+if (isset ($_POST ['SujetAFermeID']) && !empty ( $_POST ['SujetAFermeID'] )) 	
+{
+	$sql="UPDATE sujet SET statut='0' WHERE sid=".$_POST ['SujetAFermeID']." "; 
+	$statement = $pdo->query($sql);
+	
+}
+
+// Vérification du formulaire d'ouverture de sujet une fois que celui-ci est rempli
+if (isset ($_POST ['SujetAReouvrirID']) && !empty ( $_POST ['SujetAReouvrirID'] ))
+{
+	$sql="UPDATE sujet SET statut='1' WHERE sid=".$_POST ['SujetAReouvrirID']." ";
+	$statement = $pdo->query($sql);
+
+}
+
 ?>
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="UTF-8">
 		<link href="css/bootstrap.css" rel="stylesheet">
-		<link href="css/Index.css" rel="stylesheet">
 		<title> Accueil | Forum PHP </title>
 	</head>
 	<body >
@@ -111,7 +125,7 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 		<?php for($i = 0 ; $i<count($categorie); $i++) 
 			{
 				$test = $categorie[$i]['cid'];
-				$select = ("SELECT titre , description , cid FROM sujet WHERE cid=".$test.""); //  Récupération des sujet dans la BDD
+				$select = ("SELECT titre , description , cid , sid , statut FROM sujet WHERE cid=".$test.""); //  Récupération des sujet dans la BDD
 				$statement = $pdo->query($select);
 				$sujet = $statement->fetchAll(PDO::FETCH_ASSOC); ?>
 			<!-- Affichage des catégories -->
@@ -121,9 +135,57 @@ if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont 
 						</div>
 							<p class="panel-body"><?= $categorie[$i]['description']?></p>
 										<ul class="list-group">
-						<!-- Affichage des sujets, premier jets -->
-						<?php for($j = 0 ; $j<count($sujet) ; $j++) :?>
-							<a href="Sujet.php?Titresujet=<?= $sujet[$j]['titre'] ?>" class="list-group-item"> <h4><?= $sujet[$j]['titre']?> :</h4><p> <?= $sujet[$j]['description'] ?></p> </a>			
+						<!-- Affichage des sujets -->
+						<?php for($j = 0 ; $j<count($sujet) ; $j++): ?>
+								<?php if (isset($_SESSION['admin']) && isset($_SESSION['uid'])): ?>
+									<?php if ($sujet[$j]['statut']== '1'  && $_SESSION['admin'] == '1'):?> <!-- Si le sujet est ouvert et que l'utilisateur est un administrateur -->
+										<a href="Sujet.php?sid=<?= $sujet[$j]['sid'] ?>" class="list-group-item"> 
+											<h4><?= $sujet[$j]['titre']?> :</h4>
+												<p> <?= $sujet[$j]['description'] ?></p> 
+										</a>
+										<form name="formFermetureSujet" action="#" method="POST">
+											<input type="hidden" name="SujetAFermeID" value="<?= $sujet[$j]['sid']?>" required>
+											<button type="submit" class="btn btn-warning"> Fermez le sujet </button>
+										</form> 
+									<?php elseif ($sujet[$j]['statut']== '0'  && $_SESSION['admin'] == '1'):?> <!-- Si le sujet est fermé et que l'utilisateur est un administrateur -->
+										<li class="list-group-item"> 
+											<h4><?= $sujet[$j]['titre']?> :</h4>
+												<p> <?= $sujet[$j]['description'] ?></p> 		
+										</li>
+										<p> Ce sujet est fermé</p>
+										<form name="formOuvertureSujet" action="#" method="POST">	
+											<input type="hidden" name="SujetAReouvrirID" value="<?= $sujet[$j]['sid']?>" required>
+											<button type="submit" class="btn btn-warning"> Réouvrir le sujet </button> 
+										</form>		
+									<?php endif;?>
+								<?php else:?>
+									<?php if ($sujet[$j]['statut']== '1'): ?> <!-- Si le sujet est ouvert -->
+										<a href="Sujet.php?sid=<?= $sujet[$j]['sid'] ?>" class="list-group-item"> 
+											<h4><?= $sujet[$j]['titre']?> :</h4>
+												<p> <?= $sujet[$j]['description'] ?></p> 
+										</a>
+									<?php elseif ($sujet[$j]['statut']== '0' ):?> <!-- Si le sujet est fermé -->
+										<li class="list-group-item"> 
+											<h4><?= $sujet[$j]['titre']?> :</h4>
+												<p> <?= $sujet[$j]['description'] ?></p> 		
+										</li>
+										<p> Ce sujet est fermé</p>
+									<?php endif;?>	
+								<?php endif;?>
+							<?php if (isset($_SESSION['uid'])): ?> <!-- Si la personne est connecté mais n'est pas un administrateur -->
+								<?php if ($sujet[$j]['statut']== '1'): ?> <!-- Si le sujet est ouvert -->
+									<a href="Sujet.php?sid=<?= $sujet[$j]['sid'] ?>" class="list-group-item"> 
+										<h4><?= $sujet[$j]['titre']?> :</h4>
+											<p> <?= $sujet[$j]['description'] ?></p> 
+									</a>
+								<?php elseif ($sujet[$j]['statut']== '0' ):?> <!-- Si le sujet est fermé -->
+									<li class="list-group-item"> 
+										<h4><?= $sujet[$j]['titre']?> :</h4>
+											<p> <?= $sujet[$j]['description'] ?></p> 		
+									</li>
+									<p> Ce sujet est fermé</p>
+								<?php endif;?>	
+							<?php endif;?>					
 						<?php endfor;?>
 						</ul>
 				 </section>
