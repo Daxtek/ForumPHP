@@ -6,8 +6,7 @@ require('init-page.php');
 $messageFermeture = '';
 
 //Test si on est déjà connecté
-
-	require('ConnexionUser.php');
+require('ConnexionUser.php');
 
 // Récupération des catégories et des sujets
 $forum = $Requests->getCategoriesAndSujets();
