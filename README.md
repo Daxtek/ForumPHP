@@ -1,7 +1,5 @@
 Reste à faire:
 --
-	- Créer l'option de fermeture/reouverture de sujet
-	- Appliquer partout la double sécurité de sujet ???
 	- Griser le sujet fermé ?
 	- Bien tout remettre au propore et commenté
 	

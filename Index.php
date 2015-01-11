@@ -102,37 +102,51 @@ if (isset ($_POST ['SujetAReouvrirID']) && !empty ( $_POST ['SujetAReouvrirID'] 
 				<div class="panel-heading">
 					<h1 class="panel-title" ><?= $categorie['Titre']?></h1>
 				</div>
-				<p class="panel-body"><?= $categorie['Description']?></p>
-								<ul class="list-group">
-				<!-- Affichage des sujets, premier jets -->
-				<?php foreach ($categorie['sujets'] as $sujetKey => $sujet): ?>
-					<?php if ($sujet['Statut']== '1'): ?> <!-- Si le sujet est ouvert -->
-						<a href="Sujet.php?sid=<?= $sujet['sid'] ?>" class="list-group-item"> 
-							<h4><?= $sujet['Titre']?> :</h4>
-							<p> <?= $sujet['Description'] ?></p> 
-						</a>
-					<?php elseif ($sujet['Statut']== '0' ):?> <!-- Si le sujet est fermé -->
-						<li class="list-group-item"> 
-							<h4><?= $sujet['Titre']?> :</h4>
-							<p> <?= $sujet['Description'] ?></p> 		
-						</li>
-						<p> Ce sujet est fermé</p>
-					<?php endif;?>	
-					<?php if (isset($_SESSION['admin'])): ?> <!-- Si le sujet est ouvert et que l'utilisateur est un administrateur -->
-						<?php if ($sujet['Statut']== '1'  && $_SESSION['admin'] == '1'):?>
-							<form name="formFermetureSujet" action="#" method="POST">
-								<input type="hidden" name="SujetAFermeID" value="<?= $sujet['sid']?>" required>
-								<button type="submit" class="btn btn-warning"> Fermez le sujet </button>
-							</form> 
-						<?php elseif ($sujet['Statut']== '0'  && $_SESSION['admin'] == '1'):?> <!-- Si le sujet est fermé et que l'utilisateur est un administrateur -->
-							<form name="formOuvertureSujet" action="#" method="POST">	
-								<input type="hidden" name="SujetAReouvrirID" value="<?= $sujet['sid']?>" required>
-								<button type="submit" class="btn btn-warning"> Réouvrir le sujet </button> 
-							</form>		
+				<div class="panel-body">
+					<p ><?= $categorie['Description']?></p>
+					<ul class="list-group">
+					<!-- Affichage des sujets, premier jets -->
+					<?php foreach ($categorie['sujets'] as $sujetKey => $sujet): ?>
+						<?php if (isset($_SESSION['admin']) && $_SESSION['admin'] == '1'): ?> <!-- Si l'utilisateur est connecté et que c'est un administrateur -->
+							<?php if ($sujet['Statut']== '1' ):?> <!-- Si le sujet est ouvert -->
+								<a href="Sujet.php?sid=<?= $sujet['sid'] ?>" class="list-group-item col-lg-9"> 
+									<h4><?= $sujet['Titre']?> :</h4>
+									<p> <?= $sujet['Description'] ?></p> 
+								</a>
+								<form name="formFermetureSujet" action="#" method="POST" >
+									<div class="form-group col-lg-3">
+										<input type="hidden" name="SujetAFermeID" value="<?= $sujet['sid']?>" required>
+										<button type="submit" class="btn btn-warning"> Fermez le sujet </button>
+									</div>
+								</form> 
+							<?php elseif ($sujet['Statut']== '0' ):?> <!-- Si le sujet est fermé  -->
+								<li class="list-group-item col-lg-9 disabled"> 
+									<h4><?= $sujet['Titre']?> :</h4>
+									<p> <?= $sujet['Description'] ?></p> 		
+								</li>
+								<form name="formOuvertureSujet" action="#" method="POST">	
+									<div class="form-group col-lg-3">
+										<input type="hidden" name="SujetAReouvrirID" value="<?= $sujet['sid']?>" required>
+										<button type="submit" class="btn btn-warning"> Réouvrir le sujet </button> 
+									</div>
+								</form>		
+							<?php endif;?>
+						<?php else:?> 
+							<?php if ($sujet['Statut']== '1' ):?> <!-- Si le sujet est ouvert -->
+								<a href="Sujet.php?sid=<?= $sujet['sid'] ?>" class="list-group-item "> 
+									<h4><?= $sujet['Titre']?> :</h4>
+									<p> <?= $sujet['Description'] ?></p> 
+								</a>
+							<?php elseif ($sujet['Statut']== '0' ):?> <!-- Si le sujet est fermé -->
+								<li class="list-group-item disabled" > 
+									<h4><?= $sujet['Titre']?> :</h4>
+									<p> <?= $sujet['Description'] ?></p> 		
+								</li>
+							<?php endif;?>
 						<?php endif;?>
-					<?php endif;?>
-				<?php endforeach ?>
-				</ul>
+					<?php endforeach ?>
+					</ul>
+				</div>
 			 </section>
 		<?php endforeach ?>
 		</section>
