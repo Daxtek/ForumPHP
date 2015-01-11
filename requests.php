@@ -47,7 +47,7 @@ class Requests {
 	public function addCategorie($titre, $uid, $description) {
 		$stmt = $this->pdo->prepare('
 			INSERT INTO categorie (Titre, uid, `date de creation`, Description)
-			VALUES (:titre, :uid, CURRENT_DATE, :description)
+			VALUES (:titre, :uid, NOW(), :description)
 		');
 		$stmt->bindParam(':titre', $titre);
 		$stmt->bindParam(':uid', $uid);
@@ -85,7 +85,7 @@ class Requests {
 	public function addSujet($cid, $uid, $description, $titre) {
 		$stmt = $this->pdo->prepare('
 			INSERT INTO sujet (cid, uid, `Date de creation`, Description, Titre, Statut)
-			VALUES (:cid, :uid, CURRENT_DATE, :description, :titre, 1)
+			VALUES (:cid, :uid, NOW(), :description, :titre, 1)
 		');
 		$stmt->bindParam(':cid', $cid);
 		$stmt->bindParam(':uid', $uid);
@@ -96,7 +96,7 @@ class Requests {
 	}
 	
 	public function closeSubject($sid) {
-		$stmt = $this->pdo->prepare('UPDATE sujet SET statut=0 WHERE sid=:sid');
+		$stmt = $this->pdo->prepare('UPDATE sujet SET statut=0,`Date de fermeture`=NOW() WHERE sid=:sid');
 		$stmt->bindParam(':sid', $sid);
 
 		return $stmt->execute();
@@ -154,7 +154,7 @@ class Requests {
 	public function addUser($pseudo, $mdp, $mail, $nom, $prenom) {
 		$stmt = $this->pdo->prepare('
 			INSERT INTO utilisateur (Pseudonyme, `Mot de passe`, Mail, `Date d\'inscription`, `Nombre de post`, Administrateur, Nom, Prenom)
-			VALUES (:pseudo, :mdp, :mail, CURRENT_DATE, 0, 0, :nom, :prenom)
+			VALUES (:pseudo, :mdp, :mail, NOW(), 0, 0, :nom, :prenom)
 		');
 		$stmt->bindParam(':pseudo', $pseudo);
 		$stmt->bindParam(':mdp', $mdp);
@@ -177,7 +177,7 @@ class Requests {
 	public function addPost($sid, $cid, $uid, $titre, $texte) {
 		$stmt = $this->pdo->prepare('
 			INSERT INTO post (sid, cid, uid , Titre, `date de creation`, Texte)
-			VALUES (:sid, :cid, :uid, :titre, CURRENT_DATE, :texte)
+			VALUES (:sid, :cid, :uid, :titre, NOW(), :texte)
 		');
 		$stmt->bindParam(':sid', $sid);
 		$stmt->bindParam(':cid', $cid);

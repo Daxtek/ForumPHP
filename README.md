@@ -1,7 +1,6 @@
 Reste à faire:
 --
 	- Revoir la création de sujet ( automatiquement un 1er post , description nécessaire ? mettre le dernier message a la place )
-	- Date de fermeture
 	- 1er/dernier Post
 	- L'admin doit pouvoir supprimer et modifier les posts
 	- Le créateur du post et les admin doivent pouvoir modifer leurs/les posts

@@ -10,8 +10,6 @@
 		<?php for($j = 0 ; $j<count($post) ; $j++) :?>
 			<li href="#" class="list-group-item"> <h4><?= $post[$j]['Titre']?> :</h4><p> <?= $post[$j]['Texte'] ?></p> </li>			
 		<?php endfor;?>
-		
-		
 		<section class="container"> <!-- Section du formulaire de nouveau post -->
 			<h4>Répondre :</h4>
 			<form  name="formPost" action="#" method="POST" onsubmit="return verifForm()">

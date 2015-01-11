@@ -21,7 +21,7 @@ if (isset ($_POST ['SujetAFermeID']) && !empty ( $_POST ['SujetAFermeID'] ))
 	}
 	else
 	{
-		$errorMessage.= 'Le sujet n\'a pas été fermé';
+		$errorMessage.= 'Le sujet n\'a pas été fermé, il y a eu un problème';
 	}
 }
 // Vérification du formulaire d'ouverture de sujet une fois que celui-ci est rempli
