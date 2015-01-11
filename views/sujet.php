@@ -8,7 +8,14 @@
 	<ul class="list-group">
 		<!--Mettre les posts ici -->
 		<?php for($j = 0 ; $j<count($post) ; $j++) :?>
-			<li href="#" class="list-group-item"> <h4>Réponse</h4><p> <?= $post[$j]['Texte'] ?></p> </li>			
+			<li href="#" class="list-group-item">
+				<h4>Réponse</h4>
+				<p><?= $post[$j]['Texte'] ?></p>
+				<?php if ($_SESSION['uid'] == $post[$j]['uid'] || $_SESSION['admin']): ?>
+					<a class="btn btn-xs btn-default" href="modif_post.php?pid=<?= $post[$j]['pid'] ?>">Modifier</a>
+					<a class="btn btn-xs btn-default" href="suppr_post.php?pid=<?= $post[$j]['pid'] ?>">Supprimer</a>
+				<?php endif ?>
+			</li>			
 		<?php endfor;?>
 		
 		

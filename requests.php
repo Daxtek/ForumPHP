@@ -47,7 +47,7 @@ class Requests {
 	public function addCategorie($titre, $uid, $description) {
 		$stmt = $this->pdo->prepare('
 			INSERT INTO categorie (Titre, uid, `date de creation`, Description)
-			VALUES (:titre, :uid, CURRENT_DATE, :description)
+			VALUES (:titre, :uid, NOW(), :description)
 		');
 		$stmt->bindParam(':titre', $titre);
 		$stmt->bindParam(':uid', $uid);
@@ -57,6 +57,14 @@ class Requests {
 	}
 
 	// === SUJETS ===
+	public function sujetExist($sid) {
+		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE sid=:sid');
+		$stmt->bindParam(':sid', $sid);
+		$stmt->execute();
+
+		return !empty($stmt->fetchAll(PDO::FETCH_ASSOC));
+	}
+
 	public function getSujetsByCategorie($cid) {
 		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE cid=:cid');
 		$stmt->bindParam(':cid', $cid);
@@ -85,7 +93,7 @@ class Requests {
 	public function addSujet($cid, $uid, $description, $titre) {
 		$stmt = $this->pdo->prepare('
 			INSERT INTO sujet (cid, uid, `Date de creation`, Description, Titre, Statut)
-			VALUES (:cid, :uid, CURRENT_DATE, :description, :titre, 1)
+			VALUES (:cid, :uid, NOW(), :description, :titre, 1)
 		');
 		$stmt->bindParam(':cid', $cid);
 		$stmt->bindParam(':uid', $uid);
@@ -100,9 +108,6 @@ class Requests {
 		$stmt->bindParam(':sid', $sid);
 
 		return $stmt->execute();
-		
-		
-	
 	}
 	
 	public function openSubject($sid) {
@@ -154,7 +159,7 @@ class Requests {
 	public function addUser($pseudo, $mdp, $mail, $nom, $prenom) {
 		$stmt = $this->pdo->prepare('
 			INSERT INTO utilisateur (Pseudonyme, `Mot de passe`, Mail, `Date d\'inscription`, `Nombre de post`, Administrateur, Nom, Prenom)
-			VALUES (:pseudo, :mdp, :mail, CURRENT_DATE, 0, 0, :nom, :prenom)
+			VALUES (:pseudo, :mdp, :mail, NOW(), 0, 0, :nom, :prenom)
 		');
 		$stmt->bindParam(':pseudo', $pseudo);
 		$stmt->bindParam(':mdp', $mdp);
@@ -166,6 +171,26 @@ class Requests {
 	}
 	
 	// ==== POST ====
+	public function postExist($pid) {
+		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE pid=:pid');
+		$stmt->bindParam(':pid', $pid);
+		$stmt->execute();
+
+		return !empty($stmt->fetchAll(PDO::FETCH_ASSOC));
+	}
+
+	public function getPost($pid) {
+		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE pid=:pid');
+		$stmt->bindParam(':pid', $pid);
+		$stmt->execute();
+		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+		if (empty($res))
+			return false;		
+		else
+			return $res[0];
+	}
+
 	public function getPostsBySubject($sid) {
 		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE sid=:sid');
 		$stmt->bindParam(':sid', $sid);
@@ -177,13 +202,21 @@ class Requests {
 	public function addPost($sid, $cid, $uid, $texte) {
 		$stmt = $this->pdo->prepare('
 			INSERT INTO post (sid, cid, uid , `date de creation`, Texte)
-			VALUES (:sid, :cid, :uid, CURRENT_DATE, :texte)
+			VALUES (:sid, :cid, :uid, NOW(), :texte)
 		');
 		$stmt->bindParam(':sid', $sid);
 		$stmt->bindParam(':cid', $cid);
 		$stmt->bindParam(':uid', $uid);
 		$stmt->bindParam(':texte', $texte);
 	
+		return $stmt->execute();
+	}
+
+	public function updatePost($pid, $texte) {
+		$stmt = $this->pdo->prepare('UPDATE post SET `Texte`=:texte WHERE pid=:pid');
+		$stmt->bindParam(':texte', $texte);
+		$stmt->bindParam(':pid', $pid);
+
 		return $stmt->execute();
 	}
 	
