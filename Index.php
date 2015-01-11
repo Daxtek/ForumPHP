@@ -1,73 +1,42 @@
-<!-- Auteurs: DIEUDONNE Loïc, GAUVIN Thomas -->
+<?php
 
-<?php 
-
-session_start(); //Permet d'utiliser les sessions et leur variables
+require('init-page.php');
 
 //Initialisation des variables
-$errorMessage = '';
-$faute = false;
+$messageFermeture = '';
 
-//connexion db
-require("connexion.php");
-$pdo=connect_bd();
+//Test si on est déjà connecté
 
-$select = ("SELECT titre , description , cid FROM categorie"); //Récupération des catégories dans la BDD
-$statement = $pdo->query($select);
-$categorie = $statement->fetchAll(PDO::FETCH_ASSOC);
+	require('ConnexionUser.php');
 
-$select = ("SELECT titre , description , cid  FROM sujet"); //Récupération des sujets dans la BDD
-$statement = $pdo->query($select);
-$sujet = $statement->fetchAll(PDO::FETCH_ASSOC);
+// Récupération des catégories et des sujets
+$forum = $Requests->getCategoriesAndSujets();
 
-
-$select = ("SELECT * FROM utilisateur"); // Récupération des données de la table utilisateur
-$statement = $pdo->query ( $select );
-$utilisateur = $statement->fetchAll ( PDO::FETCH_ASSOC );
-
-// Vérification du formulaire de connexion une fois que celui-ci est rempli
-if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont requis ( required )
-{
-	// Récupération des données du formulaire
-	$pseudo = ($_POST ['pseudo']);
-	$mdp = ($_POST ['mdp']);
-
-	for($i=0; $i<count($utilisateur); $i++)
-	{
-		$uid = $utilisateur[$i]['uid']; // Récupère le numéro d'id de la personne
-		$recuppseudo = $utilisateur[$i]['Pseudonyme'];
-		$recupmdp = $utilisateur[$i]['Mot de passe'];
-		$admin = $utilisateur[$i]['Administrateur'];
-			
-			if ($recuppseudo == $pseudo && $recupmdp == $mdp)
-			{
-			// Créer les variables de sessions
-				$_SESSION ['pseudo'] = $pseudo;
-				$_SESSION ['uid'] = $uid;
-				$_SESSION ['admin'] = $admin;
-				header ('Location: ./Index.php'); //Redirection vers la page d'accueil
-			}
-			else
-			{
-				$errorMessage = 'Vos identifiants sont faux'; //Message d'erreur
-			}
-	}
-}
 
 // Vérification du formulaire de fermeture de sujet une fois que celui-ci est rempli
 if (isset ($_POST ['SujetAFermeID']) && !empty ( $_POST ['SujetAFermeID'] )) 	
 {
-	$sql="UPDATE sujet SET statut='0' WHERE sid=".$_POST ['SujetAFermeID']." "; 
-	$statement = $pdo->query($sql);
-	
+	if($Requests->closeSubject($_POST ['SujetAFermeID']))
+	{
+		header('Location: ./Index.php'); //Réactualise la page
+	}
+	else
+	{
+		$errorMessage.= 'Le sujet n\'a pas été fermé';
+	}
 }
 
 // Vérification du formulaire d'ouverture de sujet une fois que celui-ci est rempli
 if (isset ($_POST ['SujetAReouvrirID']) && !empty ( $_POST ['SujetAReouvrirID'] ))
 {
-	$sql="UPDATE sujet SET statut='1' WHERE sid=".$_POST ['SujetAReouvrirID']." ";
-	$statement = $pdo->query($sql);
-
+	if($Requests->openSubject($_POST['SujetAReouvrirID']))
+	{
+		header('Location: ./Index.php'); //Réactualise la page
+	}
+	else
+	{
+		$errorMessage.= 'Le sujet n\'a pas été réouvert';
+	}
 }
 
 ?>
@@ -113,83 +82,59 @@ if (isset ($_POST ['SujetAReouvrirID']) && !empty ( $_POST ['SujetAReouvrirID'] 
 			<?php endif; ?>
 	        </div>
 	      </div>
-    </nav>
+    	</nav>
 		
-		<?php if(!empty($errorMessage)):?> <!-- Rencontre-t-on une erreur ?  -->
-				<p class="alert alert-danger"> <?= htmlspecialchars($errorMessage) ?> </p>
+		<?php if(!empty($errorMessage)):?>
+			<p class="alert alert-danger"> <?= htmlspecialchars($errorMessage) ?> </p>
+		<?php elseif(!empty($messageFermeture)): ?><!-- Message du succès de la création --> 
+				<p class="alert alert-success"><?=  htmlspecialchars($messageFermeture) ?> </p>
 		<?php endif;?>
+
+
 		<section class="container"> <!-- Section centrale -->
 			<header>
 				<h1> Bienvenue sur le forum !! </h1>
 			</header>
-		<?php for($i = 0 ; $i<count($categorie); $i++) 
-			{
-				$test = $categorie[$i]['cid'];
-				$select = ("SELECT titre , description , cid , sid , statut FROM sujet WHERE cid=".$test.""); //  Récupération des sujet dans la BDD
-				$statement = $pdo->query($select);
-				$sujet = $statement->fetchAll(PDO::FETCH_ASSOC); ?>
+
+		<?php foreach ($forum as $categorieKey => $categorie): ?>
 			<!-- Affichage des catégories -->
-					<section  class="panel panel-primary"> 
-						<div class="panel-heading">
-							<h1 class="panel-title" ><?= $categorie[$i]['titre']?></h1>
-						</div>
-							<p class="panel-body"><?= $categorie[$i]['description']?></p>
-										<ul class="list-group">
-						<!-- Affichage des sujets -->
-						<?php for($j = 0 ; $j<count($sujet) ; $j++): ?>
-								<?php if (isset($_SESSION['admin']) && isset($_SESSION['uid'])): ?>
-									<?php if ($sujet[$j]['statut']== '1'  && $_SESSION['admin'] == '1'):?> <!-- Si le sujet est ouvert et que l'utilisateur est un administrateur -->
-										<a href="Sujet.php?sid=<?= $sujet[$j]['sid'] ?>" class="list-group-item"> 
-											<h4><?= $sujet[$j]['titre']?> :</h4>
-												<p> <?= $sujet[$j]['description'] ?></p> 
-										</a>
-										<form name="formFermetureSujet" action="#" method="POST">
-											<input type="hidden" name="SujetAFermeID" value="<?= $sujet[$j]['sid']?>" required>
-											<button type="submit" class="btn btn-warning"> Fermez le sujet </button>
-										</form> 
-									<?php elseif ($sujet[$j]['statut']== '0'  && $_SESSION['admin'] == '1'):?> <!-- Si le sujet est fermé et que l'utilisateur est un administrateur -->
-										<li class="list-group-item"> 
-											<h4><?= $sujet[$j]['titre']?> :</h4>
-												<p> <?= $sujet[$j]['description'] ?></p> 		
-										</li>
-										<p> Ce sujet est fermé</p>
-										<form name="formOuvertureSujet" action="#" method="POST">	
-											<input type="hidden" name="SujetAReouvrirID" value="<?= $sujet[$j]['sid']?>" required>
-											<button type="submit" class="btn btn-warning"> Réouvrir le sujet </button> 
-										</form>		
-									<?php endif;?>
-								<?php else:?>
-									<?php if ($sujet[$j]['statut']== '1'): ?> <!-- Si le sujet est ouvert -->
-										<a href="Sujet.php?sid=<?= $sujet[$j]['sid'] ?>" class="list-group-item"> 
-											<h4><?= $sujet[$j]['titre']?> :</h4>
-												<p> <?= $sujet[$j]['description'] ?></p> 
-										</a>
-									<?php elseif ($sujet[$j]['statut']== '0' ):?> <!-- Si le sujet est fermé -->
-										<li class="list-group-item"> 
-											<h4><?= $sujet[$j]['titre']?> :</h4>
-												<p> <?= $sujet[$j]['description'] ?></p> 		
-										</li>
-										<p> Ce sujet est fermé</p>
-									<?php endif;?>	
-								<?php endif;?>
-							<?php if (isset($_SESSION['uid'])): ?> <!-- Si la personne est connecté mais n'est pas un administrateur -->
-								<?php if ($sujet[$j]['statut']== '1'): ?> <!-- Si le sujet est ouvert -->
-									<a href="Sujet.php?sid=<?= $sujet[$j]['sid'] ?>" class="list-group-item"> 
-										<h4><?= $sujet[$j]['titre']?> :</h4>
-											<p> <?= $sujet[$j]['description'] ?></p> 
-									</a>
-								<?php elseif ($sujet[$j]['statut']== '0' ):?> <!-- Si le sujet est fermé -->
-									<li class="list-group-item"> 
-										<h4><?= $sujet[$j]['titre']?> :</h4>
-											<p> <?= $sujet[$j]['description'] ?></p> 		
-									</li>
-									<p> Ce sujet est fermé</p>
-								<?php endif;?>	
-							<?php endif;?>					
-						<?php endfor;?>
-						</ul>
-				 </section>
-		<?php }?>
+			<section  class="panel panel-primary"> 
+				<div class="panel-heading">
+					<h1 class="panel-title" ><?= $categorie['Titre']?></h1>
+				</div>
+				<p class="panel-body"><?= $categorie['Description']?></p>
+								<ul class="list-group">
+				<!-- Affichage des sujets, premier jets -->
+				<?php foreach ($categorie['sujets'] as $sujetKey => $sujet): ?>
+					<?php if ($sujet['Statut']== '1'): ?> <!-- Si le sujet est ouvert -->
+						<a href="Sujet.php?sid=<?= $sujet['sid'] ?>" class="list-group-item"> 
+							<h4><?= $sujet['Titre']?> :</h4>
+							<p> <?= $sujet['Description'] ?></p> 
+						</a>
+					<?php elseif ($sujet['Statut']== '0' ):?> <!-- Si le sujet est fermé -->
+						<li class="list-group-item"> 
+							<h4><?= $sujet['Titre']?> :</h4>
+							<p> <?= $sujet['Description'] ?></p> 		
+						</li>
+						<p> Ce sujet est fermé</p>
+					<?php endif;?>	
+					<?php if (isset($_SESSION['admin'])): ?> <!-- Si le sujet est ouvert et que l'utilisateur est un administrateur -->
+						<?php if ($sujet['Statut']== '1'  && $_SESSION['admin'] == '1'):?>
+							<form name="formFermetureSujet" action="#" method="POST">
+								<input type="hidden" name="SujetAFermeID" value="<?= $sujet['sid']?>" required>
+								<button type="submit" class="btn btn-warning"> Fermez le sujet </button>
+							</form> 
+						<?php elseif ($sujet['Statut']== '0'  && $_SESSION['admin'] == '1'):?> <!-- Si le sujet est fermé et que l'utilisateur est un administrateur -->
+							<form name="formOuvertureSujet" action="#" method="POST">	
+								<input type="hidden" name="SujetAReouvrirID" value="<?= $sujet['sid']?>" required>
+								<button type="submit" class="btn btn-warning"> Réouvrir le sujet </button> 
+							</form>		
+						<?php endif;?>
+					<?php endif;?>
+				<?php endforeach ?>
+				</ul>
+			 </section>
+		<?php endforeach ?>
 		</section>
 	</body>
 	<footer >

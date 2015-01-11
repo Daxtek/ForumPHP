@@ -1,7 +1,7 @@
-<!-- Auteurs: DIEUDONNE Loïc, GAUVIN Thomas -->
 
-<?php 
-session_start(); // Autorise l'utilisation des variables de session
+<?php
+
+require('init-page.php');
 
 if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la personne est connectée au site )
 {
@@ -12,85 +12,72 @@ if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la
 }
 
 //Initialisation des variables
-$errorMessage = '';
 $messageInscription ='';
 $faute = false;
 
-//connexion db
-require("connexion.php");
-$pdo=connect_bd();
-
 //Vérification du formulaire une fois que celui-ci est rempli
-if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis ( required ) 
-{
-	//Récupération des données du formulaire
-	$nom=($_POST ['nom']);
-	$prenom=( $_POST ['prenom']);
-	$mail=( $_POST ['email']);
-	$pseudo=( $_POST ['pseudo']);
-	$mdp=( $_POST ['mdp']);
-	$mdpConfirmation=( $_POST ['mdpConfirmation']);
-	//Création de la date
-	$date = date('Y').'-'.date('m').'-'.date('d') ;
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+	if (
+		isset($_POST['nom']) &&
+		!empty( $_POST['nom']) &&
+		isset($_POST['prenom']) &&
+		!empty( $_POST['prenom']) &&
+		isset($_POST['email']) &&
+		!empty( $_POST['email']) &&
+		isset($_POST['pseudo']) &&
+		!empty( $_POST['pseudo']) &&
+		isset($_POST['mdp']) &&
+		!empty( $_POST['mdp']) &&
+		isset($_POST['mdpConfirmation']) &&
+		!empty( $_POST['mdpConfirmation'])
+	) { // Uniquement $nom car tous les champs sont requis ( required ) 
+
+		//Récupération des données du formulaire
+		$nom=($_POST ['nom']);
+		$prenom=( $_POST ['prenom']);
+		$mail=( $_POST ['email']);
+		$pseudo=( $_POST ['pseudo']);
+		$mdp=( $_POST ['mdp']);
+		$mdpConfirmation=( $_POST ['mdpConfirmation']);
 	
 	//Vérification de l'existence du pseudonyme
-		//Récupération des pseudonymes dans la BDD
-		$select = ("SELECT pseudonyme FROM utilisateur");
-		$statement = $pdo->query($select);
-		$row = $statement->fetchAll(PDO::FETCH_ASSOC);
-		
-		for($i = 0 ; $i < count($row); $i++ )
-		{
-			// Si le pseudonyme existe déjà dans la BDD 
-			if ($row[$i]['pseudonyme'] == $pseudo)
-			{
-				$errorMessage .= " Le pseudonyme que vous avez choisi existe déjà. "; // message d'erreur
-				$faute = true;
-			}
+		if ($Requests->userExist($pseudo)) {
+			$errorMessage .= "Le pseudonyme que vous avez choisi existe déjà.\n"; // message d'erreur
+			$faute = true;
 		}
+
 		
 	//Vérification de l'existence du mail
-	
-		//Récupération des mails dans la BDD
-		$select = ("SELECT mail FROM utilisateur");
-		$statement = $pdo->query($select);
-		$rowMail = $statement->fetchAll(PDO::FETCH_ASSOC);
-		
-		for($i = 0 ; $i < count($rowMail); $i++ ) //Parcours des mails de la BDD
+		if ($Requests->mailExist($mail))
 		{
-			// Si le mail existe déjà dans la BDD
-			if ($rowMail[$i]['mail'] == $mail)
-			{
-				$errorMessage .= " Le mail que vous avez choisi existe déjà. ";
-				$faute = true;
-			}
+			$errorMessage .= "Le mail que vous avez choisi existe déjà.\n";
+			$faute = true;
 		}
 		
 	//Vérification du mot de passe	
 		if ( $mdp != $mdpConfirmation)
 		{
-			$errorMessage .= " Les mots de passe ne correspondent pas. ";
+			$errorMessage .= "Les mots de passe ne correspondent pas.\n";
 			$faute=true;
 		}		
 		
 	//Si l'ensemble des données sont correctes on ajoute le nouveau membre dans la table utilisateur
-		if($faute != true)
+		if(!$faute)
 		{
 			//Insertion des données de l'utilisateur dans la base
-			$sql="insert into utilisateur values ( '$pseudo', '$mdp', '$mail', '$date' ,	'0', '0', '' , '$nom' , '$prenom' ) "; //le champs vide est le champs de l'id qui est créer automatiquement
-			$statement = $pdo->query($sql);
-			
-			//Personnalisation du message en fonction de si l'utilisateur est un administrateur ou non
-			if(isset($_SESSION['admin'])) 
-			{
-				$messageInscription ='Vous avez inscrit l\'utilisateur ' . $pseudo  ;
+			if ($Requests->addUser($pseudo, $mdp, $mail, $nom, $prenom)) {
+				//Personnalisation du message en fonction de si l'utilisateur est un administrateur ou non
+				if(isset($_SESSION['admin']))
+					$messageInscription ='Vous avez inscrit l\'utilisateur ' . $pseudo  ;
+				else
+					$messageInscription ='Vous êtes inscrit '. $pseudo;
 			}
+
 			else
-			{
-				$messageInscription ='Vous êtes inscrit '. $pseudo;
-			}
+				$errorMessage .= "Une erreur est survenu lors de l'enregistrement...";
 		}
-} 
+	} 
+}
 ?>
 
 <!DOCTYPE html>
@@ -135,8 +122,8 @@ if ( !empty( $_POST ['nom'])) // Uniquement $nom car tous les champs sont requis
 		<!-- Messages d'alerte -->
 		<?php if(!empty($errorMessage)):?> <!-- Rencontre-t-on une erreur ?  -->
 				<p class="alert alert-danger"> <?= htmlspecialchars($errorMessage) ?> </p>
-		<?php elseif(!empty($messageCreation)): ?><!-- Message du succès de la création --> 
-			<p class="alert alert-success"><?=  htmlspecialchars($messageCreation) ?> </p>
+		<?php elseif(!empty($messageInscription)): ?><!-- Message du succès de la création --> 
+			<p class="alert alert-success"><?=  htmlspecialchars($messageInscription) ?> </p>
 		<?php endif;?>
 		</section>
 		<footer class="container">

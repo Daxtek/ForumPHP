@@ -1,60 +1,24 @@
 <!-- Auteurs: DIEUDONNE Loïc, GAUVIN Thomas -->
 <?php
 
-session_start(); //Permet d'utiliser les sessions et leur variables
+require('init-page.php');
+
+
+
+	require('ConnexionUser.php');
+	
 
 //Initialisation des variables
-$errorMessage = '';
+$messageCreation = '';
 $faute = false;
-
-//connexion db
-require("connexion.php");
-$pdo=connect_bd();
-
-$select = ("SELECT * FROM utilisateur"); // Récupération des données de la table utilisateur
-$statement = $pdo->query ( $select );
-$utilisateur = $statement->fetchAll ( PDO::FETCH_ASSOC );
-
-$select = ("SELECT titre , texte , sid FROM post WHERE sid=". $_GET['sid']." "); //Récupération des posts dans la BDD
-$statement = $pdo->query($select);
-$post = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 
 if (isset( $_GET['sid'] )) // Si l'on accède à la page via le lien du sujet dans la page d'accueil
 {
 	
-	// Vérification du formulaire de connection une fois que celui-ci est rempli
-	if (! empty ( $_POST ['pseudo'] )) 	// Uniquement $nom car tous les champs sont requis ( required )
-	{
-		// Récupération des données du formulaire
-		$pseudo = ($_POST ['pseudo']);
-		$mdp = ($_POST ['mdp']);
-	
-		for($i=0; $i<count($utilisateur); $i++)
-		{
-			$uid = $utilisateur[$i]['uid']; // Récupère le numéro d'id de la personne
-			$recuppseudo = $utilisateur[$i]['Pseudonyme'];
-			$recupmdp = $utilisateur[$i]['Mot de passe'];
-			$admin = $utilisateur[$i]['Administrateur'];
-				
-			if ($recuppseudo == $pseudo && $recupmdp == $mdp)
-			{
-				// Créer les variables de sessions
-				$_SESSION ['pseudo'] = $pseudo;
-				$_SESSION ['uid'] = $uid;
-				$_SESSION ['admin'] = $admin;
-				header ('Location: ./Sujet.php?sid='.$_GET['sid'].''); //Redirection vers la page d'accueil
-			}
-			else
-			{
-				$errorMessage = 'Vos identifiants sont faux'; //Message d'erreur
-			}
-		}
-	}
-	
-	$select = ("SELECT titre , description , cid FROM sujet WHERE sid=". $_GET['sid']." "); //Récupération des sujets dans la BDD
-	$statement = $pdo->query($select);
-	$sujet = $statement->fetchAll(PDO::FETCH_ASSOC); 
+	// Récupération du sujet
+	$sujet = $Requests->getSujet($_GET['sid']);
+	$post = $Requests->getPostsBySubject($_GET['sid']);
 	
 	if ( !empty( $_POST['titre']) && !empty($_POST['texte'])) // Vérifie que tous les champs du formulaire de post ont été remplis 
 	{
@@ -63,8 +27,6 @@ if (isset( $_GET['sid'] )) // Si l'on accède à la page via le lien du sujet da
 			//Variables du post à ajouter dans la BDD
 			$titre=($_POST ['titre']);
 			$texte=($_POST ['texte']);
-			//Création de la date
-			$date = date('Y').'-'.date('m').'-'.date('d') ;
 			//Récupération de l'id de l'utilisateur créateur de la catégorie
 			$uid = $_SESSION['uid'];
 			$sid = $_GET['sid']; // l'id du sujet
@@ -74,7 +36,7 @@ if (isset( $_GET['sid'] )) // Si l'on accède à la page via le lien du sujet da
 			for($i = 0 ; $i < count($post); $i++ ) //Parcours des titres
 			{
 				// Si le post existe déjà dans la BDD
-				if ($post[$i]['titre'] == $titre)
+				if ($post[$i]['Titre'] == $titre)
 				{
 					$errorMessage .= " Le post que vous voulez créer existe déjà. ";
 					$faute = true;
@@ -84,11 +46,8 @@ if (isset( $_GET['sid'] )) // Si l'on accède à la page via le lien du sujet da
 			//Si l'ensemble des données sont correctes on ajoute le nouveau sujet dans la table sujet
 			if($faute != true)
 			{
-				//le champs vide est le champs de l'id qui est créer automatiquement , 0000-00-00 corespond a la date de fermeture , 1 car le sujet et ouvert , les deux dernier 0 sont dans l'ordre le 1er et le dernier post
-				$sql="insert into post values ( '' , '$sid' , '$cid', '$uid' ,  '$titre' , '$date'  ,'$texte') ";
-				$statement = $pdo->query($sql);
 				
-				if ($statement) //Si l'insertion du post s'est bien faite donc si le nouveau post existe dans la BDD
+				if ($Requests->addPost($sid, $cid, $uid, $titre, $texte)) //Si l'insertion du post s'est bien faite donc si le nouveau post existe dans la BDD
 				{
 					header ('Location: ./Sujet.php?sid='.$sid.''); //Réactualisation de la page
 				}
@@ -156,17 +115,17 @@ else
     </nav>
     
     <section class="container">
-    <h3> Bienvenue sur le sujet <?= $sujet[0]['titre']?> </h3>
+    <h3> Bienvenue sur le sujet <?= $sujet[0]['Titre']?> </h3>
 		<!-- Affichage des sujets -->
 		<section  class="panel panel-primary"> 
 			<div class="panel-heading">
-				<h1 class="panel-title" ><?= $sujet[0]['titre']?></h1>
+				<h1 class="panel-title" ><?= $sujet[0]['Titre']?></h1>
 			</div>
-			<p class="panel-body"><?= $sujet[0]['description']?></p>
+			<p class="panel-body"><?= $sujet[0]['Description']?></p>
 				<ul class="list-group">
 				<!--Mettre les posts ici -->
 				<?php for($j = 0 ; $j<count($post) ; $j++) :?>
-					<a href="#" class="list-group-item"> <h4><?= $post[$j]['titre']?> :</h4><p> <?= $post[$j]['texte'] ?></p> </a>			
+					<li href="#" class="list-group-item"> <h4><?= $post[$j]['Titre']?> :</h4><p> <?= $post[$j]['Texte'] ?></p> </li>			
 				<?php endfor;?>
 				
 				
