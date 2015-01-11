@@ -174,15 +174,14 @@ class Requests {
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
-	public function addPost($sid, $cid, $uid, $titre, $texte) {
+	public function addPost($sid, $cid, $uid, $texte) {
 		$stmt = $this->pdo->prepare('
-			INSERT INTO post (sid, cid, uid , Titre, `date de creation`, Texte)
-			VALUES (:sid, :cid, :uid, :titre, NOW(), :texte)
+			INSERT INTO post (sid, cid, uid , `date de creation`, Texte)
+			VALUES (:sid, :cid, :uid, NOW(), :texte)
 		');
 		$stmt->bindParam(':sid', $sid);
 		$stmt->bindParam(':cid', $cid);
 		$stmt->bindParam(':uid', $uid);
-		$stmt->bindParam(':titre', $titre);
 		$stmt->bindParam(':texte', $texte);
 	
 		return $stmt->execute();
