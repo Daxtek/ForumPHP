@@ -11,6 +11,7 @@ function debug($var) {
 }
 
 //Initialisation des variables
+$titlePage = 'ForumPHP';
 $errorMessage = '';
 
 require("requests.php");
