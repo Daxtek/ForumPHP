@@ -82,17 +82,46 @@ class Requests {
 		return !empty($stmt->fetchAll(PDO::FETCH_ASSOC));
 	}
 
-	public function addSujet($cid, $uid, $description, $titre) {
+	
+	public function addSujet($cid, $uid, $titre,$texte)
+	{
+		// Requête du sujet
 		$stmt = $this->pdo->prepare('
-			INSERT INTO sujet (cid, uid, `Date de creation`, Description, Titre, Statut)
-			VALUES (:cid, :uid, NOW(), :description, :titre, 1)
+			INSERT INTO sujet (cid, uid, `Date de creation`, Titre, Statut)
+			VALUES (:cid, :uid, NOW(), :titre, 1)
 		');
 		$stmt->bindParam(':cid', $cid);
 		$stmt->bindParam(':uid', $uid);
-		$stmt->bindParam(':description', $description);
 		$stmt->bindParam(':titre', $titre);
+		
+		//Si la requête est fausse, la suite de la fonction est annulé
+		if(!$stmt->execute())
+			return false;
+		
+		$sid = $this->sujetLastId();
+		
+		//Ajout le nouveau post dans la table post
+		if(! $this->addPost($sid, $cid, $uid, $texte)) //Si la requête est fausse, la suite de la fonction est annulé
+			return false;
 
-		return $stmt->execute();
+		//Récupère l'id du nouveau sujet
+		$pid= $this->postLastId();
+		
+		return $this->updateLastAndFirstPost($pid, $sid);
+		
+		
+	}
+	
+	//Récupère l'id du dernier sujet ajouter dans la table sujet
+	public function sujetLastId() {
+		$stmt = $this->pdo->prepare('
+			SELECT sid FROM sujet ORDER BY sid DESC LIMIT 1
+		');
+		//Si la requête est fausse, la suite de la fonction est annulé
+		if(!$stmt->execute())
+			return false;
+		$lastID = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $lastID[0]['sid'];
 	}
 	
 	public function closeSubject($sid) {
@@ -100,9 +129,6 @@ class Requests {
 		$stmt->bindParam(':sid', $sid);
 
 		return $stmt->execute();
-		
-		
-	
 	}
 	
 	public function openSubject($sid) {
@@ -111,6 +137,36 @@ class Requests {
 	
 		return $stmt->execute();
 	
+	}
+	
+	//Met a jour le premier dans la table sujet
+	public function updateFirstPost($pid, $sid)
+	{
+		$stmt = $this->pdo->prepare('UPDATE sujet SET `Premier post`=:pid WHERE sid=:sid');
+		$stmt->bindParam(':pid', $pid);
+		$stmt->bindParam(':sid', $sid);
+	
+		return $stmt->execute();
+	}
+	
+	//Met a jour le dernier dans la table sujet
+	public function updateLastPost($pid, $sid)
+	{
+		$stmt = $this->pdo->prepare('UPDATE sujet SET `Dernier post`=:pid WHERE sid=:sid');
+		$stmt->bindParam(':pid', $pid);
+		$stmt->bindParam(':sid', $sid);
+	
+		return $stmt->execute();
+	}
+	
+	//Met a jour le premier et le dernier post dans la table sujet avec le même identifiant de post, fait pour la création du sujet
+	public function updateLastAndFirstPost($pid, $sid)
+	{
+		$stmt = $this->pdo->prepare('UPDATE sujet SET `Premier post`=:pid, `Dernier post`=:pid WHERE sid=:sid');
+		$stmt->bindParam(':pid', $pid);
+		$stmt->bindParam(':sid', $sid);
+	
+		return $stmt->execute();
 	}
 
 	// === USER ===
@@ -186,6 +242,20 @@ class Requests {
 	
 		return $stmt->execute();
 	}
+	
+	//Récupère l'id du dernier post ajouter dans la table post
+	public function postLastId() {
+		$stmt = $this->pdo->prepare('
+			SELECT pid FROM post ORDER BY pid DESC LIMIT 1
+		');
+		//Exécute la requête
+		if(!$stmt->execute())//Si la requête est fausse, la suite de la fonction est annulé
+			return false;
+		
+		$lastID = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $lastID[0]['pid'];
+	}
+	
 	
 }
 

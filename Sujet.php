@@ -18,7 +18,7 @@ if (isset( $_GET['sid'] )) // Si l'on accède à la page via le lien du sujet da
 	$sujet = $Requests->getSujet($_GET['sid']);
 	$post = $Requests->getPostsBySubject($_GET['sid']);
 
-	include 'formPost.php';
+	include 'formAddPost.php';
 
 	$titlePage = $sujet[0]['Titre'];
 

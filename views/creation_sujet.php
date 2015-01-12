@@ -2,16 +2,13 @@
 			<h1> Formulaire de création de sujet</h1>
 		</header>
 		<form  name="formSujet" action="#" method="POST" onsubmit="return verifForm()">
-			<label  for="idtitre"> Titre : </label><input class="form-control" type="text" id="idtitre" name="titre" size="20" maxlength="50" pattern="[A-Z]+[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789 ]{2,}" title="Veuillez renter un titre commencent par une majuscule, taille minimum 3 caractères" required ><br>
-			<label  for="iddescrip"> Description : </label><textarea class="form-control"  id="iddescrip" name="description" rows="4" cols="50" maxlength="1000" title="Description de la catégorie"></textarea><br>
-			<label  for="iddescrip"> Catégorie : </label>
-			<select class="form-control" name="categorie">
-				<option value="select"> Sélectionnez la catégorie à laquelle le sujet appartient </option>  <!-- Affiche les différents choix possible à l'aide d'une boucle  -->
-				<?php foreach ($categories as $key => $categorie): ?>
-					<option value=<?= $categorie['cid']?>><?=  $categorie['Titre'] ?> </option> 
-				 <?php endforeach ?>
-			</select>
-			<br>
+			<label  for="idtitre"> Titre : </label><input class="form-control" type="text" id="idtitre" name="titre" size="20" maxlength="50" pattern="[A-Z]+[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789 ]{2,}" title="Veuillez renter un titre commencent par une majuscule, taille minimum 3 caractères" required ><br>			
+		<div class="row">	
+			<div class="form-group col-lg-8 col-md-8">	
+				<label  for="idtexte"> Texte : </label>
+				<textarea class="form-control"  id="idtexte" name="texte" rows="4" cols="50" maxlength="1000" title="Description de la catégorie"></textarea><br>
+			</div>
+		</div>
 			
 			<input class="btn btn-default" type="submit" value="Valider">
 			<input class="btn btn-default" type="reset" value="Reinitialiser"/> 

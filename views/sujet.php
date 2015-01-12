@@ -4,7 +4,6 @@
 	<div class="panel-heading">
 		<h1 class="panel-title" ><?= $sujet[0]['Titre']?></h1>
 	</div>
-	<p class="panel-body"><?= $sujet[0]['Description']?></p>
 	<ul class="list-group">
 		<!--Mettre les posts ici -->
 		<?php for($j = 0 ; $j<count($post) ; $j++) :?>
