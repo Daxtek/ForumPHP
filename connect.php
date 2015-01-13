@@ -2,6 +2,5 @@
 define ('USER',"root");
 define('PASSWD',"");
 define('SERVER',"localhost");
-define('BASE',"bddforumphp");
+define('BASE',"forumphp");
 ?>
-
