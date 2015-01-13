@@ -19,14 +19,10 @@
 						<?php if(($_SESSION['admin']) == '1'): ?> <!--  Si la personne qui est connecté est pas un administrateur alors elle peut accéder aux rubriques qui suivent -->
 							<ul class="nav navbar-nav">
 								<li><a  href="Inscription.php"> Inscrire un nouvel utilisateur </a></li>
-								<li><a  href="CreationSujet.php"> Créer Sujet </a></li>
 								<li><a  href="CreationCategorie.php"> Créer Catégorie </a></li>
 							</ul>
 							<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>
 						<?php else: ?> <!-- Si c'est un simple utilisateur -->
-							<ul class="nav navbar-nav">
-								<li><a  href="CreationSujet.php"> Créer Sujet </a></li>
-							</ul>
 							<a class="btn btn-primary navbar-btn navbar-right" href="Deconnexion.php"> Deconnexion </a>
 						<?php endif; ?>
 					<?php endif; ?>

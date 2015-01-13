@@ -29,12 +29,18 @@ class Requests {
 
 	public function getCategoriesAndSujets() {
 		$categories = $this->getAllCategories();
-		foreach ($categories as $key => $categorie) {
-			$categories[$key]['sujets'] = $this->getSujetsByCategorie($categorie['cid']);
+		
+		foreach ($categories as $categorieKey => $categorie) {
+			$categories[$categorieKey]['sujets'] = $this->getSujetsByCategorie($categorie['cid']);
+			
+			foreach ($categories[$categorieKey]['sujets'] as $sujetKey => $sujet){
+				$categories[$categorieKey]['sujets'][$sujetKey]['Dernier post'] =$this->getPost($sujet['Dernier post']);
+			}
 		}
 
 		return $categories;
 	}
+	
 
 	public function titreCategorieExist($titre) {
 		$stmt = $this->pdo->prepare('SELECT * FROM categorie WHERE Titre=:titre');
@@ -85,8 +91,11 @@ class Requests {
 	
 	public function addSujet($cid, $uid, $titre,$texte)
 	{
+		
+		//$stmt = $this->pdo->beginTransaction();
+		
 		// Requête du sujet
-		$stmt = $this->pdo->prepare('
+		$stmt= $this->pdo->prepare('
 			INSERT INTO sujet (cid, uid, `Date de creation`, Titre, Statut)
 			VALUES (:cid, :uid, NOW(), :titre, 1)
 		');
@@ -94,15 +103,28 @@ class Requests {
 		$stmt->bindParam(':uid', $uid);
 		$stmt->bindParam(':titre', $titre);
 		
+		
 		//Si la requête est fausse, la suite de la fonction est annulé
 		if(!$stmt->execute())
+		{
+			//$stmt->rollback(); //annule
 			return false;
+		}
+		else
+		{
+			//$stmt->commit(); //valide
+		}
+		
 		
 		$sid = $this->sujetLastId();
 		
 		//Ajout le nouveau post dans la table post
 		if(! $this->addPost($sid, $cid, $uid, $texte)) //Si la requête est fausse, la suite de la fonction est annulé
+		{
+			//$stmt->rollback(); //annule
 			return false;
+		}
+			
 
 		//Récupère l'id du nouveau sujet
 		$pid= $this->postLastId();
@@ -254,6 +276,25 @@ class Requests {
 		
 		$lastID = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return $lastID[0]['pid'];
+	}
+	
+	public function getPost($pid)
+	{
+		$stmt = $this->pdo->prepare('
+				SELECT pid, cid, uid, sid, `Date de creation`, Texte , Pseudonyme FROM post
+				NATURAL JOIN utilisateur 
+				WHERE pid=:pid
+				');
+		
+		$stmt->bindParam(':pid', $pid);
+		$stmt->execute();
+		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		
+		if(empty($res))
+			return false;
+		else
+			return $res[0]; 
+		
 	}
 	
 	

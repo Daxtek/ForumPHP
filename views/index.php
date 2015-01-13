@@ -17,7 +17,7 @@
 						<?php if ($sujet['Statut']== '1' ):?> <!-- Si le sujet est ouvert -->
 							<a href="Sujet.php?sid=<?= $sujet['sid'] ?>" class="list-group-item col-lg-10"> 
 								<h4><?= $sujet['Titre']?> :</h4>
-								<p></p> <!-- Afficher le dernier post -->
+								<p><?= $sujet['Dernier post']['Texte']?></p> <!-- Afficher le dernier post -->
 							</a>
 							<form name="formFermetureSujet" action="#" method="POST" >
 								<div class="form-group col-lg-2">
@@ -28,7 +28,7 @@
 						<?php elseif ($sujet['Statut']== '0' ):?> <!-- Si le sujet est fermé  -->
 							<li class="list-group-item col-lg-10 disabled"> 
 								<h4><?= $sujet['Titre']?> :</h4>
-								<p> </p> <!-- Afficher le dernier post --> 		
+								<p> <?= $sujet['Dernier post']['Texte']?></p> <!-- Afficher le dernier post --> 		
 							</li>
 							<form name="formOuvertureSujet" action="#" method="POST">	
 								<div class="form-group col-lg-2">
@@ -41,19 +41,19 @@
 						<?php if ($sujet['Statut']== '1' ):?> <!-- Si le sujet est ouvert -->
 							<a href="Sujet.php?sid=<?= $sujet['sid'] ?>" class="list-group-item "> 
 								<h4><?= $sujet['Titre']?> :</h4>
-								<p> </p> <!-- Afficher le dernier post -->
+								<p> <?= $sujet['Dernier post']['Texte']?> </p> <!-- Afficher le dernier post -->
 							</a>
 						<?php elseif ($sujet['Statut']== '0' ):?> <!-- Si le sujet est fermé -->
 							<li class="list-group-item disabled" > 
 								<h4><?= $sujet['Titre']?> :</h4>
-								<p> </p> <!-- Afficher le dernier post -->	
+								<p> <?= $sujet['Dernier post']['Texte']?></p> <!-- Afficher le dernier post -->	
 							</li>
 						<?php endif;?>
 					<?php endif;?>
 				<?php endforeach ?>
 			</ul>
 			<?php if (isset($_SESSION['uid']) && !empty($_SESSION['uid']) ): ?> <!-- Si on est un utilisateur alors on affiche le lien vers la création de sujet -->
-				<a class="btn btn-default"  href="CreationSujet.php?cid=<?= $categorie['cid'] ?>"> Créer un nouveau sujet </a> <!-- Lien vers la création de sujet -->
+				<a class="btn btn-default col-lg-3"  href="CreationSujet.php?cid=<?= $categorie['cid'] ?>"> Créer un nouveau sujet </a> <!-- Lien vers la création de sujet -->
 			<?php endif;?>
 		</div>
 	 </section>
