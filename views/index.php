@@ -14,7 +14,7 @@
 				<!-- Affichage des sujets -->
 				<?php foreach ($categorie['sujets'] as $sujetKey => $sujet): ?>
 					<?php if (isset($_SESSION['admin']) && $_SESSION['admin'] == '1'): ?> <!-- Si l'utilisateur est connecté et que c'est un administrateur -->
-						<?php if ($sujet['Statut']== '1' ):?> <!-- Si le sujet est ouvert -->
+						<?php if ($sujet['ouvert']== '1' ):?> <!-- Si le sujet est ouvert -->
 							<a href="Sujet.php?sid=<?= $sujet['sujet_id'] ?>" class="list-group-item col-lg-10"> 
 								<h4><?= $sujet['titre']?> :</h4>
 								<p><?= $sujet['dernier_post']['texte']?></p> <!-- Afficher le dernier post -->
@@ -53,7 +53,7 @@
 				<?php endforeach ?>
 			</ul>
 			<?php if (isset($_SESSION['uid']) && !empty($_SESSION['uid']) ): ?> <!-- Si on est un utilisateur alors on affiche le lien vers la création de sujet -->
-				<a class="btn btn-default col-lg-3"  href="CreationSujet.php?cid=<?= $categorie['cid'] ?>"> Créer un nouveau sujet </a> <!-- Lien vers la création de sujet -->
+				<a class="btn btn-default col-lg-3"  href="CreationSujet.php?cid=<?= $categorie['categorie_id'] ?>"> Créer un nouveau sujet </a> <!-- Lien vers la création de sujet -->
 			<?php endif;?>
 		</div>
 	 </section>

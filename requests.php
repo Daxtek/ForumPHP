@@ -110,7 +110,6 @@ class Requests {
 		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
 		$stmt->bindParam(':titre', $titre);
 		
-		
 		//Si la requête est fausse, la suite de la fonction est annulé
 		if(!$stmt->execute())
 		{
@@ -126,7 +125,7 @@ class Requests {
 		$sujet_id = $this->sujetLastId();
 		
 		//Ajout le nouveau post dans la table post
-		if(! $this->addPost($sujet_id, $categorie_id, $utilisateur_id, $texte)) //Si la requête est fausse, la suite de la fonction est annulé
+		if(! $this->addPost($sujet_id, $utilisateur_id, $texte)) //Si la requête est fausse, la suite de la fonction est annulé
 		{
 			//$stmt->rollback(); //annule
 			return false;
@@ -147,6 +146,7 @@ class Requests {
 			SELECT sujet_id FROM sujet ORDER BY sujet_id DESC LIMIT 1
 		');
 		//Si la requête est fausse, la suite de la fonction est annulé
+		
 		if(!$stmt->execute())
 			return false;
 		$lastID = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -287,13 +287,12 @@ class Requests {
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
-	public function addPost($sujet_id, $categorie_id, $utilisateur_id, $texte) {
+	public function addPost($sujet_id, $utilisateur_id, $texte) {
 		$stmt = $this->pdo->prepare('
-			INSERT INTO post (sujet_id, categorie_id, utilisateur_id , date_creation, Texte)
-			VALUES (:sujet_id, :categorie_id, :utilisateur_id, NOW(), :texte)
+			INSERT INTO post (sujet_id, utilisateur_id , date_creation, texte)
+			VALUES (:sujet_id, :utilisateur_id, NOW(), :texte)
 		');
 		$stmt->bindParam(':sujet_id', $sujet_id);
-		$stmt->bindParam(':categorie_id', $categorie_id);
 		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
 		$stmt->bindParam(':texte', $texte);
 	
