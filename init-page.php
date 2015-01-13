@@ -10,8 +10,9 @@ function debug($var) {
 	echo '</pre>';
 }
 
+
 //La fonction debug avec un die qui stop tout ce qui vient après
-function debugdie($var) {
+function debugDie($var) {
 	echo '<pre>';
 	var_export($var);
 	echo '</pre>';

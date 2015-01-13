@@ -24,7 +24,7 @@ if ( // Vérifie que tous les champs du formulaire de post ont été remplis
 			}
 			else
 			{
-				$errorMessage .= " Il y a eu une erreur le post n'a pas été créer, veuillez réessayer"; //Message d'erreur
+				$errorMessage .= " Il y a eu une erreur le post n'a pas été enregistré, veuillez réessayer"; //Message d'erreur
 			}
 		}
 	}

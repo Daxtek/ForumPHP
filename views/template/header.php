@@ -10,9 +10,7 @@
 
 		<?php include 'nav.php'; ?>
 
-		<?php if(!empty($errorMessage)):?>
-			<p class="alert alert-danger"><?= htmlspecialchars($errorMessage) ?></p>
-		<?php endif;?>
-
-
 		<section class="container"> <!-- Section centrale -->
+			<?php if(!empty($errorMessage)):?>
+				<p class="alert alert-danger"><?= htmlspecialchars($errorMessage) ?></p>
+			<?php endif;?>

@@ -11,12 +11,12 @@ $messageCreation = '';
 $faute = false;
 
 
-if (isset( $_GET['sid'] )) // Si l'on accède à la page via le lien du sujet dans la page d'accueil
+if (isset( $_GET['sid'] ) && $Requests->sujetExist($_GET['sid'])) // Si l'on accède à la page via le lien du sujet dans la page d'accueil
 {
 	
 	// Récupération du sujet
 	$sujet = $Requests->getSujet($_GET['sid']);
-	$post = $Requests->getPostsBySubject($_GET['sid']);
+	$posts = $Requests->getPostsBySubject($_GET['sid']);
 
 	include 'formAddPost.php';
 

@@ -29,12 +29,11 @@ class Requests {
 
 	public function getCategoriesAndSujets() {
 		$categories = $this->getAllCategories();
-		
 		foreach ($categories as $categorieKey => $categorie) {
 			$categories[$categorieKey]['sujets'] = $this->getSujetsByCategorie($categorie['cid']);
-			
-			foreach ($categories[$categorieKey]['sujets'] as $sujetKey => $sujet){
-				$categories[$categorieKey]['sujets'][$sujetKey]['Dernier post'] =$this->getPost($sujet['Dernier post']);
+
+			foreach ($categories[$categorieKey]['sujets'] as $sujetKey => $sujet) {
+				$categories[$categorieKey]['sujets'][$sujetKey]['Dernier post'] = $this->getPost($sujet['Dernier post']);
 			}
 		}
 
@@ -63,6 +62,14 @@ class Requests {
 	}
 
 	// === SUJETS ===
+	public function sujetExist($sid) {
+		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE sid=:sid');
+		$stmt->bindParam(':sid', $sid);
+		$stmt->execute();
+
+		return !empty($stmt->fetchAll(PDO::FETCH_ASSOC));
+	}
+
 	public function getSujetsByCategorie($cid) {
 		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE cid=:cid');
 		$stmt->bindParam(':cid', $cid);
@@ -244,8 +251,36 @@ class Requests {
 	}
 	
 	// ==== POST ====
+	public function postExist($pid) {
+		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE pid=:pid');
+		$stmt->bindParam(':pid', $pid);
+		$stmt->execute();
+
+		return !empty($stmt->fetchAll(PDO::FETCH_ASSOC));
+	}
+
+	public function getPost($pid) {
+		$stmt = $this->pdo->prepare('
+			SELECT pid, cid, uid, sid, `Date de creation`, Texte, Pseudonyme FROM post
+			NATURAL JOIN utilisateur
+			WHERE pid=:pid
+		');
+		$stmt->bindParam(':pid', $pid);
+		$stmt->execute();
+		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+		if (empty($res))
+			return false;
+		else
+			return $res[0];
+	}
+
 	public function getPostsBySubject($sid) {
-		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE sid=:sid');
+		$stmt = $this->pdo->prepare('
+			SELECT pid, cid, uid, sid, `Date de creation`, Texte, Pseudonyme FROM post
+			NATURAL JOIN utilisateur
+			WHERE sid=:sid
+		');
 		$stmt->bindParam(':sid', $sid);
 		$stmt->execute();
 	
@@ -264,6 +299,21 @@ class Requests {
 	
 		return $stmt->execute();
 	}
+
+	public function deletePost($pid) {
+		$stmt = $this->pdo->prepare('DELETE FROM post WHERE pid=:pid');
+		$stmt->bindParam(':pid', $pid);
+
+		return $stmt->execute();
+	}
+
+	public function updatePost($pid, $texte) {
+		$stmt = $this->pdo->prepare('UPDATE post SET `Texte`=:texte WHERE pid=:pid');
+		$stmt->bindParam(':texte', $texte);
+		$stmt->bindParam(':pid', $pid);
+
+		return $stmt->execute();
+	}
 	
 	//Récupère l'id du dernier post ajouter dans la table post
 	public function postLastId() {
@@ -277,27 +327,6 @@ class Requests {
 		$lastID = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return $lastID[0]['pid'];
 	}
-	
-	public function getPost($pid)
-	{
-		$stmt = $this->pdo->prepare('
-				SELECT pid, cid, uid, sid, `Date de creation`, Texte , Pseudonyme FROM post
-				NATURAL JOIN utilisateur 
-				WHERE pid=:pid
-				');
-		
-		$stmt->bindParam(':pid', $pid);
-		$stmt->execute();
-		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		
-		if(empty($res))
-			return false;
-		else
-			return $res[0]; 
-		
-	}
-	
-	
 }
 
 $Requests = new Requests(connect_bd());
