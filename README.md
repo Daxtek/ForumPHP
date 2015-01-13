@@ -5,6 +5,7 @@ Reste à faire:
 	- 1er/dernier Post
 	- L'admin doit pouvoir supprimer et modifier les posts
 	- Le créateur du post et les admin doivent pouvoir modifer leurs/les posts
+	- Afficher le nom des personnes qui ont poster un message
 	- Bien tout remettre au propore et commenté
 	
 Diagrammes

@@ -4,28 +4,40 @@
 	<div class="panel-heading">
 		<h1 class="panel-title" ><?= $sujet[0]['Titre']?></h1>
 	</div>
-	<p class="panel-body"><?= $sujet[0]['Description']?></p>
 	<ul class="list-group">
 		<!--Mettre les posts ici -->
-		<?php for($j = 0 ; $j<count($post) ; $j++) :?>
+		<?php foreach ($posts as $postsKey => $post): ?>
 			<li href="#" class="list-group-item">
-				<h4>Réponse</h4>
-				<p><?= $post[$j]['Texte'] ?></p>
-				<?php if ($_SESSION['uid'] == $post[$j]['uid'] || $_SESSION['admin']): ?>
-					<a class="btn btn-xs btn-default" href="modif_post.php?pid=<?= $post[$j]['pid'] ?>">Modifier</a>
-					<a class="btn btn-xs btn-default" href="suppr_post.php?pid=<?= $post[$j]['pid'] ?>">Supprimer</a>
+				<h4><?= $post['Pseudonyme'] ?> posté le <?= $post['Date de creation'] ?></h4>
+				<p><?= $post['Texte'] ?></p>
+				<?php if (isset($_SESSION['uid']) && ($_SESSION['uid'] == $post['uid'] || $_SESSION['admin'])): ?>
+					<a class="btn btn-xs btn-default" href="modif_post.php?pid=<?= $post['pid'] ?>">Modifier</a>
+					<a class="btn btn-xs btn-default" href="suppr_post.php?pid=<?= $post['pid'] ?>">Supprimer</a>
 				<?php endif ?>
 			</li>			
-		<?php endfor;?>
+		<?php endforeach ?>
 		
 		
-		<section class="container"> <!-- Section du formulaire de nouveau post -->
+		<li class="list-group-item"> <!-- Section du formulaire de nouveau post -->
 			<h4>Répondre :</h4>
-			<?php include 'views/forms/formPost.php'; ?>
-		</section>
+			<?php if (isset($_SESSION['uid'])): ?>
+				<form  name="formPost" action="" method="POST" onsubmit="return verifForm()">
+					<div class="row">	
+						<div class="form-group col-lg-8 col-md-8">	
+							<label  for="idtexte"> Texte : </label>
+							<textarea class="form-control"  id="idtexte" name="texte" rows="4" cols="50" maxlength="1000" title="Description de la catégorie"></textarea><br>
+						</div>
+					</div>
+					<input class="btn btn-default" type="submit" value="Valider">
+					<input class="btn btn-default" type="reset" value="Reinitialiser"/> 
+				</form>	
+			<?php else: ?>
+				<p class="alert alert-info">Connectez-vous pour répondre</p>
+			<?php endif ?>
+		</li>
 		<?php if(!empty($messageCreation)): ?><!-- Message du succès de la création --> 
 			<p class="alert alert-success"><?=  htmlspecialchars($messageCreation) ?> </p>
-		<?php endif;?>	
+		<?php endif; ?>	
 	</ul>
 </section>
 <script>

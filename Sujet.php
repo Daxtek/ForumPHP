@@ -16,7 +16,7 @@ if (isset( $_GET['sid'] ) && $Requests->sujetExist($_GET['sid'])) // Si l'on acc
 	
 	// Récupération du sujet
 	$sujet = $Requests->getSujet($_GET['sid']);
-	$post = $Requests->getPostsBySubject($_GET['sid']);
+	$posts = $Requests->getPostsBySubject($_GET['sid']);
 
 	include 'formAddPost.php';
 

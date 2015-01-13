@@ -29,8 +29,12 @@ class Requests {
 
 	public function getCategoriesAndSujets() {
 		$categories = $this->getAllCategories();
-		foreach ($categories as $key => $categorie) {
-			$categories[$key]['sujets'] = $this->getSujetsByCategorie($categorie['cid']);
+		foreach ($categories as $categorieKey => $categorie) {
+			$categories[$categorieKey]['sujets'] = $this->getSujetsByCategorie($categorie['cid']);
+
+			foreach ($categories[$categorieKey]['sujets'] as $sujetKey => $sujet) {
+				$categories[$categorieKey]['sujets'][$sujetKey]['Dernier post'] = $this->getPost($sujet['Dernier post']);
+			}
 		}
 
 		return $categories;
@@ -180,19 +184,27 @@ class Requests {
 	}
 
 	public function getPost($pid) {
-		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE pid=:pid');
+		$stmt = $this->pdo->prepare('
+			SELECT pid, cid, uid, sid, `Date de creation`, Texte, Pseudonyme FROM post
+			NATURAL JOIN utilisateur
+			WHERE pid=:pid
+		');
 		$stmt->bindParam(':pid', $pid);
 		$stmt->execute();
 		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 		if (empty($res))
-			return false;		
+			return false;
 		else
 			return $res[0];
 	}
 
 	public function getPostsBySubject($sid) {
-		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE sid=:sid');
+		$stmt = $this->pdo->prepare('
+			SELECT pid, cid, uid, sid, `Date de creation`, Texte, Pseudonyme FROM post
+			NATURAL JOIN utilisateur
+			WHERE sid=:sid
+		');
 		$stmt->bindParam(':sid', $sid);
 		$stmt->execute();
 	
@@ -209,6 +221,13 @@ class Requests {
 		$stmt->bindParam(':uid', $uid);
 		$stmt->bindParam(':texte', $texte);
 	
+		return $stmt->execute();
+	}
+
+	public function deletePost($pid) {
+		$stmt = $this->pdo->prepare('DELETE FROM post WHERE pid=:pid');
+		$stmt->bindParam(':pid', $pid);
+
 		return $stmt->execute();
 	}
 

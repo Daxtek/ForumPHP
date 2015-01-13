@@ -11,6 +11,8 @@ require('ConnexionUser.php');
 // Récupération des catégories et des sujets
 $forum = $Requests->getCategoriesAndSujets();
 
+debugDie($forum);
+
 
 // Vérification du formulaire de fermeture de sujet une fois que celui-ci est rempli
 if (isset ($_POST ['SujetAFermeID']) && !empty ( $_POST ['SujetAFermeID'] )) 	

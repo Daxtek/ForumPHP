@@ -30,7 +30,7 @@ if (isset( $_GET['pid'] ) && $Requests->postExist($_GET['pid'])) { // Si l'on ac
 		$titlePage = 'Modifier post';
 
 		include 'views/template/header.php';
-		include 'views/forms/formPost.php';
+		include 'views/modif_post.php';
 		include 'views/template/footer.php';
 	}
 	else
