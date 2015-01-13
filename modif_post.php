@@ -7,7 +7,7 @@ if (isset( $_GET['pid'] ) && $Requests->postExist($_GET['pid'])) { // Si l'on ac
 	$pid = $_GET['pid'];
 	$post = $Requests->getPost($pid);
 
-	if ($_SESSION['uid'] == $post['uid'] || $_SESSION['admin']) {
+	if ($_SESSION['uid'] == $post['utilisateur_id'] || $_SESSION['admin']) {
 		// Gestion du formulaire
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			if (
@@ -19,7 +19,7 @@ if (isset( $_GET['pid'] ) && $Requests->postExist($_GET['pid'])) { // Si l'on ac
 				$texte = $_POST['texte'];
 
 				if ($Requests->updatePost($pid, $texte)) // Update du post
-					header ('Location: ./Sujet.php?sid='.$post['sid'].''); // Retour vers le sujet
+					header ('Location: ./Sujet.php?sid='.$post['sujet_id'].''); // Retour vers le sujet
 				else
 					$errorMessage .= " Il y a eu une erreur le post n'a pas été enregistré, veuillez réessayer";	
 			}

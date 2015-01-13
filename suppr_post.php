@@ -6,10 +6,10 @@ if (isset( $_GET['pid'] ) && $Requests->postExist($_GET['pid'])) { // Si l'on ac
 	$pid = $_GET['pid'];
 	$post = $Requests->getPost($pid);
 
-	if ($_SESSION['uid'] == $post['uid'] || $_SESSION['admin']) {
+	if ($_SESSION['uid'] == $post['utilisateur_id'] || $_SESSION['admin']) {
 		$Requests->deletePost($pid);
 	}
-	header ('Location: ./Sujet.php?sid='.$post['sid'].''); // Retour vers le sujet
+	header ('Location: ./Sujet.php?sid='.$post['sujet_id'].''); // Retour vers le sujet
 }
 else
 	header ('Location: ./Index.php'); // Redirection vers la page d'accueil

@@ -20,7 +20,7 @@ if (isset( $_GET['sid'] ) && $Requests->sujetExist($_GET['sid'])) // Si l'on acc
 
 	include 'formAddPost.php';
 
-	$titlePage = $sujet[0]['Titre'];
+	$titlePage = $sujet[0]['titre'];
 
 	include 'views/template/header.php';
 	include 'views/sujet.php';

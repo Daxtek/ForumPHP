@@ -13,7 +13,7 @@ if ( // Vérifie que tous les champs du formulaire de post ont été remplis
 		//Récupération de l'id de l'utilisateur créateur de la catégorie
 		$uid = $_SESSION['uid'];
 		$sid = $_GET['sid']; // l'id du sujet
-		$cid = $sujet[0]['cid']; // l'id de la catégorie
+		$cid = $sujet[0]['categorie_id']; // l'id de la catégorie
 		
 		//Si l'ensemble des données sont correctes on ajoute le nouveau sujet dans la table sujet
 		if(!$faute)

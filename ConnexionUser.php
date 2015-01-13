@@ -17,9 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	// Si le pseudonyme existe déjà dans la BDD
 	if ($user) {
 		// Créer les variables de sessions
-		$_SESSION['pseudo'] = $user['Pseudonyme'];
-		$_SESSION['uid'] = $user['uid'];
-		$_SESSION['admin'] = $user['Administrateur'];
+		$_SESSION['pseudo'] = $user['pseudo'];
+		$_SESSION['uid'] = $user['utilisateur_id'];
+		$_SESSION['admin'] = $user['admin'];
 		if (isset($_GET['sid'])) //Si on est sur la page de sujet
 		{
 			header ('Location: ./Sujet.php?sid='.$_GET['sid'].''); //Redirection vers la page du sujet où on est

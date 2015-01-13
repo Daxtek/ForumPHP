@@ -1,18 +1,18 @@
-<h3> Bienvenue sur le sujet <?= $sujet[0]['Titre']?> </h3>
+<h3> Bienvenue sur le sujet <?= $sujet[0]['titre']?> </h3>
 <!-- Affichage des sujets -->
 <section  class="panel panel-primary"> 
 	<div class="panel-heading">
-		<h1 class="panel-title" ><?= $sujet[0]['Titre']?></h1>
+		<h1 class="panel-title" ><?= $sujet[0]['titre']?></h1>
 	</div>
 	<ul class="list-group">
 		<!--Mettre les posts ici -->
 		<?php foreach ($posts as $postsKey => $post): ?>
 			<li href="#" class="list-group-item">
-				<h4><?= $post['Pseudonyme'] ?> posté le <?= $post['Date de creation'] ?></h4>
-				<p><?= $post['Texte'] ?></p>
-				<?php if (isset($_SESSION['uid']) && ($_SESSION['uid'] == $post['uid'] || $_SESSION['admin'])): ?>
-					<a class="btn btn-xs btn-default" href="modif_post.php?pid=<?= $post['pid'] ?>">Modifier</a>
-					<a class="btn btn-xs btn-default" href="suppr_post.php?pid=<?= $post['pid'] ?>">Supprimer</a>
+				<h4><?= $post['pseudo'] ?> posté le <?= $post['date_creation'] ?></h4>
+				<p><?= $post['texte'] ?></p>
+				<?php if (isset($_SESSION['uid']) && ($_SESSION['uid'] == $post['utilisateur_id'] || $_SESSION['admin'])): ?>
+					<a class="btn btn-xs btn-default" href="modif_post.php?pid=<?= $post['post_id'] ?>">Modifier</a>
+					<a class="btn btn-xs btn-default" href="suppr_post.php?pid=<?= $post['post_id'] ?>">Supprimer</a>
 				<?php endif ?>
 			</li>			
 		<?php endforeach ?>
