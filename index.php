@@ -6,7 +6,7 @@ require('init-page.php');
 $messageFermeture = '';
 
 //Test si on est déjà connecté
-require('ConnexionUser.php');
+require('connexion_user.php');
 
 // Récupération des catégories et des sujets
 $forum = $Requests->getCategoriesAndSujets();
@@ -16,7 +16,7 @@ if (isset ($_POST ['SujetAFermeID']) && !empty ( $_POST ['SujetAFermeID'] ))
 {
 	if($Requests->closeSubject($_POST ['SujetAFermeID']))
 	{
-		header('Location: ./Index.php'); //Réactualise la page
+		header('Location: ./'); //Réactualise la page
 	}
 	else
 	{
@@ -28,7 +28,7 @@ if (isset ($_POST ['SujetAReouvrirID']) && !empty ( $_POST ['SujetAReouvrirID'] 
 {
 	if($Requests->openSubject($_POST['SujetAReouvrirID']))
 	{
-		header('Location: ./Index.php'); //Réactualise la page
+		header('Location: ./'); //Réactualise la page
 	}
 	else
 	{

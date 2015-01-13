@@ -18,15 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	if ($user) {
 		// Créer les variables de sessions
 		$_SESSION['pseudo'] = $user['pseudo'];
-		$_SESSION['uid'] = $user['utilisateur_id'];
+		$_SESSION['utilisateur_id'] = $user['utilisateur_id'];
 		$_SESSION['admin'] = $user['admin'];
 		if (isset($_GET['sid'])) //Si on est sur la page de sujet
 		{
-			header ('Location: ./Sujet.php?sid='.$_GET['sid'].''); //Redirection vers la page du sujet où on est
+			header ('Location: ./sujet.php?sid='.$_GET['sid'].''); //Redirection vers la page du sujet où on est
 		}
 		else
 		{
-			header ('Location: ./Index.php'); //Redirection vers la page d'accueil
+			header ('Location: ./'); //Redirection vers la page d'accueil
 		}		
 	}
 	else {

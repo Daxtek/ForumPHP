@@ -7,7 +7,7 @@ if(isset($_SESSION['admin'])) //Si la variable de session a été créer ( si la
 {
 	if(($_SESSION['admin']) == '0') //Si la personne qui est connecté n'est pas un administrateur alors elle ne peut pas créer d'autres comptes
 	{
-		header('Location: ./Index.php'); //Redirection vers la page d'accueil
+		header('Location: ./'); //Redirection vers la page d'accueil
 	}
 }
 

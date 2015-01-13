@@ -1,7 +1,10 @@
+		<?php if(!empty($messageCreation)): ?><!-- Message du succès de la création --> 
+			<p class="alert alert-success"><?=  htmlspecialchars($messageCreation) ?> </p>
+		<?php endif;?>
 		<header>
 			<h1> Formulaire de création de sujet</h1>
 		</header>
-		<form  name="formSujet" action="#" method="POST" onsubmit="return verifForm()">
+		<form  name="formSujet" action="" method="POST" onsubmit="return verifForm()">
 			<label  for="idtitre"> Titre : </label><input class="form-control" type="text" id="idtitre" name="titre" size="20" maxlength="50" pattern="[A-Z]+[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789 ]{2,}" title="Veuillez renter un titre commencent par une majuscule, taille minimum 3 caractères" required ><br>			
 		<div class="row">	
 			<div class="form-group col-lg-8 col-md-8">	
@@ -13,9 +16,6 @@
 			<input class="btn btn-default" type="submit" value="Valider">
 			<input class="btn btn-default" type="reset" value="Reinitialiser"/> 
 		</form>
-		<?php if(!empty($messageCreation)): ?><!-- Message du succès de la création --> 
-			<p class="alert alert-success"><?=  htmlspecialchars($messageCreation) ?> </p>
-		<?php endif;?>
 
 		<script>
 			/* Cette fonction sert de sécurité au cas où la vérification du pattern ne fonctionne pas */

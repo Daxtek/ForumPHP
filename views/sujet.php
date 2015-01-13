@@ -7,10 +7,10 @@
 	<ul class="list-group">
 		<!--Mettre les posts ici -->
 		<?php foreach ($posts as $postsKey => $post): ?>
-			<li href="#" class="list-group-item">
+			<li class="list-group-item">
 				<h4><?= $post['pseudo'] ?> posté le <?= $post['date_creation'] ?></h4>
 				<p><?= $post['texte'] ?></p>
-				<?php if (isset($_SESSION['uid']) && ($_SESSION['uid'] == $post['utilisateur_id'] || $_SESSION['admin'])): ?>
+				<?php if (isset($_SESSION['utilisateur_id']) && ($_SESSION['utilisateur_id'] == $post['utilisateur_id'] || $_SESSION['admin'])): ?>
 					<a class="btn btn-xs btn-default" href="modif_post.php?pid=<?= $post['post_id'] ?>">Modifier</a>
 					<a class="btn btn-xs btn-default" href="suppr_post.php?pid=<?= $post['post_id'] ?>">Supprimer</a>
 				<?php endif ?>
@@ -19,7 +19,7 @@
 
 		<li class="list-group-item"> <!-- Section du formulaire de nouveau post -->
 			<h4>Répondre :</h4>
-			<?php if (isset($_SESSION['uid'])): ?>
+			<?php if (isset($_SESSION['utilisateur_id'])): ?>
 				<form  name="formPost" action="" method="POST" onsubmit="return verifForm()">
 					<div class="row">	
 						<div class="form-group col-lg-8 col-md-8">

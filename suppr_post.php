@@ -3,13 +3,13 @@ require('init-page.php');
 
 if (isset( $_GET['pid'] ) && $Requests->postExist($_GET['pid'])) { // Si l'on accède à la page via le lien du sujet dans la page d'accueil
 
-	$pid = $_GET['pid'];
-	$post = $Requests->getPost($pid);
+	$post_id = $_GET['pid'];
+	$post = $Requests->getPost($post_id);
 
 	if ($_SESSION['uid'] == $post['utilisateur_id'] || $_SESSION['admin']) {
-		$Requests->deletePost($pid);
+		$Requests->deletePost($post_id);
 	}
-	header ('Location: ./Sujet.php?sid='.$post['sujet_id'].''); // Retour vers le sujet
+	header ('Location: ./sujet.php?sid='.$post['sujet_id'].''); // Retour vers le sujet
 }
 else
-	header ('Location: ./Index.php'); // Redirection vers la page d'accueil
+	header ('Location: ./'); // Redirection vers la page d'accueil

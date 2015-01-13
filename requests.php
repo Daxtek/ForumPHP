@@ -238,7 +238,7 @@ class Requests {
 
 	public function addUser($pseudo, $mdp, $mail, $nom, $prenom) {
 		$stmt = $this->pdo->prepare('
-			INSERT INTO utilisateur (pseudo, mdp, mail, `Date d\'inscription`, `Nombre de post`, Administrateur, Nom, Prenom)
+			INSERT INTO utilisateur (pseudo, mdp, mail, date_inscription, nb_posts, admin, nom, prenom)
 			VALUES (:pseudo, :mdp, :mail, NOW(), 0, 0, :nom, :prenom)
 		');
 		$stmt->bindParam(':pseudo', $pseudo);
@@ -261,7 +261,7 @@ class Requests {
 
 	public function getPost($post_id) {
 		$stmt = $this->pdo->prepare('
-			SELECT post_id, categorie_id, utilisateur_id, sujet_id, date_creation, Texte, pseudo FROM post
+			SELECT post_id, utilisateur_id, sujet_id, date_creation, texte, pseudo FROM post
 			NATURAL JOIN utilisateur
 			WHERE post_id=:post_id
 		');
@@ -277,7 +277,7 @@ class Requests {
 
 	public function getPostsBySubject($sujet_id) {
 		$stmt = $this->pdo->prepare('
-			SELECT post_id, categorie_id, utilisateur_id, sujet_id, date_creation, Texte, pseudo FROM post
+			SELECT post_id, utilisateur_id, sujet_id, date_creation, texte, pseudo FROM post
 			NATURAL JOIN utilisateur
 			WHERE sujet_id=:sujet_id
 		');
@@ -307,7 +307,7 @@ class Requests {
 	}
 
 	public function updatePost($post_id, $texte) {
-		$stmt = $this->pdo->prepare('UPDATE post SET `Texte`=:texte WHERE post_id=:post_id');
+		$stmt = $this->pdo->prepare('UPDATE post SET `texte`=:texte WHERE post_id=:post_id');
 		$stmt->bindParam(':texte', $texte);
 		$stmt->bindParam(':post_id', $post_id);
 

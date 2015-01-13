@@ -1,7 +1,11 @@
+			<!-- Messages d'alerte -->
+			<?php if(!empty($messageInscription)): ?><!-- Message du succès de la création --> 
+				<p class="alert alert-success"><?=  htmlspecialchars($messageInscription) ?> </p>
+			<?php endif;?>
 			<header>
 				<h1> Formulaire d'inscription</h1>
 			</header>
-			<form name="formInscription" action="#" method="POST" onsubmit="return verifForm()">
+			<form name="formInscription" action="" method="POST" onsubmit="return verifForm()">
 				
 				<label for="idnom"> Nom : </label><input class="form-control" type="text" id="idnom" name="nom" size="20" maxlength="100" pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ]{2,}" title="Veuillez renter un nom contenant uniquement des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" required > <br>
 				<label for="idprenom"> Prénom : </label><input class="form-control" type="text" id="idprenom" name="prenom" size="20" maxlength="100" pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ]{2,}" title="Veuillez renter un prénom contenant uniquement des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" required > <br>
@@ -13,10 +17,6 @@
 				<input class="btn btn-default" type="submit" value="Valider">
 				<input class="btn btn-default" type="reset" value="Reinitialiser"/> 
 			</form>
-			<!-- Messages d'alerte -->
-			<?php if(!empty($messageCreation)): ?><!-- Message du succès de la création --> 
-				<p class="alert alert-success"><?=  htmlspecialchars($messageCreation) ?> </p>
-			<?php endif;?>
 
 
 			<script>

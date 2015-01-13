@@ -1,7 +1,7 @@
 		<header>
 			<h1> Formulaire de création de catégories</h1>
 		</header>
-		<form name="formCategorie" action="#" method="POST" onsubmit="return verifForm()">
+		<form name="formCategorie" action="" method="POST" onsubmit="return verifForm()">
 			
 			<label for="idtitre"> Titre : </label><input class="form-control" type="text" id="idtitre" name="titre" size="20" maxlength="50" pattern="[A-Z]+[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789 ]{2,}" title="Veuillez renter un titre commencent par une majuscule, taille minimum 3 caractères" required > <br>
 			<label for="iddescrip"> Description : </label><textarea class="form-control" id="iddescrip" name="description" rows="4" cols="50" maxlength="1000" title="Description de la catégorie"></textarea> <br>
