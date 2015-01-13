@@ -6,12 +6,6 @@
 	</div>
 	<ul class="list-group">
 		<!--Mettre les posts ici -->
-<<<<<<< HEAD
-		<?php for($j = 0 ; $j<count($post) ; $j++) :?>
-			<li href="#" class="list-group-item"> <h4>Réponse</h4><p> <?= $post[$j]['Texte'] ?></p> </li>			
-		<?php endfor;?>
-		<section class="container"> <!-- Section du formulaire de nouveau post -->
-=======
 		<?php foreach ($posts as $postsKey => $post): ?>
 			<li href="#" class="list-group-item">
 				<h4><?= $post['Pseudonyme'] ?> posté le <?= $post['Date de creation'] ?></h4>
@@ -22,10 +16,8 @@
 				<?php endif ?>
 			</li>			
 		<?php endforeach ?>
-		
-		
+
 		<li class="list-group-item"> <!-- Section du formulaire de nouveau post -->
->>>>>>> Dev-moderation
 			<h4>Répondre :</h4>
 			<?php if (isset($_SESSION['uid'])): ?>
 				<form  name="formPost" action="" method="POST" onsubmit="return verifForm()">
