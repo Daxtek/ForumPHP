@@ -12,9 +12,9 @@ class Requests {
 	}
 
 	// === CATÉGORIES ===
-	public function categorieExist($cid) {
-		$stmt = $this->pdo->prepare('SELECT * FROM categorie WHERE cid=:cid');
-		$stmt->bindParam(':cid', $cid);
+	public function categorieExist($categorie_id) {
+		$stmt = $this->pdo->prepare('SELECT * FROM categorie WHERE categorie_id=:categorie_id');
+		$stmt->bindParam(':categorie_id', $categorie_id);
 		$stmt->execute();
 
 		return !empty($stmt->fetchAll(PDO::FETCH_ASSOC));
@@ -30,10 +30,10 @@ class Requests {
 	public function getCategoriesAndSujets() {
 		$categories = $this->getAllCategories();
 		foreach ($categories as $categorieKey => $categorie) {
-			$categories[$categorieKey]['sujets'] = $this->getSujetsByCategorie($categorie['cid']);
+			$categories[$categorieKey]['sujets'] = $this->getSujetsByCategorie($categorie['categorie_id']);
 
 			foreach ($categories[$categorieKey]['sujets'] as $sujetKey => $sujet) {
-				$categories[$categorieKey]['sujets'][$sujetKey]['Dernier post'] = $this->getPost($sujet['Dernier post']);
+				$categories[$categorieKey]['sujets'][$sujetKey]['dernier_post'] = $this->getPost($sujet['dernier_post']);
 			}
 		}
 
@@ -42,72 +42,72 @@ class Requests {
 	
 
 	public function titreCategorieExist($titre) {
-		$stmt = $this->pdo->prepare('SELECT * FROM categorie WHERE Titre=:titre');
+		$stmt = $this->pdo->prepare('SELECT * FROM categorie WHERE titre=:titre');
 		$stmt->bindParam(':titre', $titre);
 		$stmt->execute();
 
 		return !empty($stmt->fetchAll(PDO::FETCH_ASSOC));
 	}
 
-	public function addCategorie($titre, $uid, $description) {
+	public function addCategorie($titre, $utilisateur_id, $description) {
 		$stmt = $this->pdo->prepare('
-			INSERT INTO categorie (Titre, uid, `date de creation`, Description)
-			VALUES (:titre, :uid, NOW(), :description)
+			INSERT INTO categorie (titre, utilisateur_id, date_creation, description)
+			VALUES (:titre, :utilisateur_id, NOW(), :description)
 		');
 		$stmt->bindParam(':titre', $titre);
-		$stmt->bindParam(':uid', $uid);
+		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
 		$stmt->bindParam(':description', $description);
 
 		return $stmt->execute();
 	}
 
 	// === SUJETS ===
-	public function sujetExist($sid) {
-		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE sid=:sid');
-		$stmt->bindParam(':sid', $sid);
+	public function sujetExist($sujet_id) {
+		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE sujet_id=:sujet_id');
+		$stmt->bindParam(':sujet_id', $sujet_id);
 		$stmt->execute();
 
 		return !empty($stmt->fetchAll(PDO::FETCH_ASSOC));
 	}
 
-	public function getSujetsByCategorie($cid) {
-		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE cid=:cid');
-		$stmt->bindParam(':cid', $cid);
+	public function getSujetsByCategorie($categorie_id) {
+		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE categorie_id=:categorie_id');
+		$stmt->bindParam(':categorie_id', $categorie_id);
 		$stmt->execute();
 
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
-	public function getSujet($sid) {
-		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE sid=:sid');
-		$stmt->bindParam(':sid', $sid);
+	public function getSujet($sujet_id) {
+		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE sujet_id=:sujet_id');
+		$stmt->bindParam(':sujet_id', $sujet_id);
 		$stmt->execute();
 	
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
-	public function titreSujetExist($titre, $cid) {
-		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE Titre=:titre AND cid=:cid');
+	public function titreSujetExist($titre, $categorie_id) {
+		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE titre=:titre AND categorie_id=:categorie_id');
 		$stmt->bindParam(':titre', $titre);
-		$stmt->bindParam(':cid', $cid);
+		$stmt->bindParam(':categorie_id', $categorie_id);
 		$stmt->execute();
 
 		return !empty($stmt->fetchAll(PDO::FETCH_ASSOC));
 	}
 
 	
-	public function addSujet($cid, $uid, $titre,$texte)
+	public function addSujet($categorie_id, $utilisateur_id, $titre, $texte)
 	{
 		
 		//$stmt = $this->pdo->beginTransaction();
 		
 		// Requête du sujet
 		$stmt= $this->pdo->prepare('
-			INSERT INTO sujet (cid, uid, `Date de creation`, Titre, Statut)
-			VALUES (:cid, :uid, NOW(), :titre, 1)
+			INSERT INTO sujet (categorie_id, utilisateur_id, date_creation, titre, ouvert)
+			VALUES (:categorie_id, :utilisateur_id, NOW(), :titre, 1)
 		');
-		$stmt->bindParam(':cid', $cid);
-		$stmt->bindParam(':uid', $uid);
+		$stmt->bindParam(':categorie_id', $categorie_id);
+		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
 		$stmt->bindParam(':titre', $titre);
 		
 		
@@ -123,10 +123,10 @@ class Requests {
 		}
 		
 		
-		$sid = $this->sujetLastId();
+		$sujet_id = $this->sujetLastId();
 		
 		//Ajout le nouveau post dans la table post
-		if(! $this->addPost($sid, $cid, $uid, $texte)) //Si la requête est fausse, la suite de la fonction est annulé
+		if(! $this->addPost($sujet_id, $categorie_id, $utilisateur_id, $texte)) //Si la requête est fausse, la suite de la fonction est annulé
 		{
 			//$stmt->rollback(); //annule
 			return false;
@@ -134,9 +134,9 @@ class Requests {
 			
 
 		//Récupère l'id du nouveau sujet
-		$pid= $this->postLastId();
+		$post_id= $this->postLastId();
 		
-		return $this->updateLastAndFirstPost($pid, $sid);
+		return $this->updateLastAndFirstPost($post_id, $sujet_id);
 		
 		
 	}
@@ -144,71 +144,71 @@ class Requests {
 	//Récupère l'id du dernier sujet ajouter dans la table sujet
 	public function sujetLastId() {
 		$stmt = $this->pdo->prepare('
-			SELECT sid FROM sujet ORDER BY sid DESC LIMIT 1
+			SELECT sujet_id FROM sujet ORDER BY sujet_id DESC LIMIT 1
 		');
 		//Si la requête est fausse, la suite de la fonction est annulé
 		if(!$stmt->execute())
 			return false;
 		$lastID = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		return $lastID[0]['sid'];
+		return $lastID[0]['sujet_id'];
 	}
 	
-	public function closeSubject($sid) {
-		$stmt = $this->pdo->prepare('UPDATE sujet SET statut=0,`Date de fermeture`=NOW() WHERE sid=:sid');
-		$stmt->bindParam(':sid', $sid);
+	public function closeSubject($sujet_id) {
+		$stmt = $this->pdo->prepare('UPDATE sujet SET ouvert=0, date_fermeture=NOW() WHERE sujet_id=:sujet_id');
+		$stmt->bindParam(':sujet_id', $sujet_id);
 
 		return $stmt->execute();
 	}
 	
-	public function openSubject($sid) {
-		$stmt = $this->pdo->prepare('UPDATE sujet SET statut=1 WHERE sid=:sid');
-		$stmt->bindParam(':sid', $sid);
+	public function openSubject($sujet_id) {
+		$stmt = $this->pdo->prepare('UPDATE sujet SET ouvert=1 WHERE sujet_id=:sujet_id');
+		$stmt->bindParam(':sujet_id', $sujet_id);
 	
 		return $stmt->execute();
 	
 	}
 	
 	//Met a jour le premier dans la table sujet
-	public function updateFirstPost($pid, $sid)
+	public function updateFirstPost($post_id, $sujet_id)
 	{
-		$stmt = $this->pdo->prepare('UPDATE sujet SET `Premier post`=:pid WHERE sid=:sid');
-		$stmt->bindParam(':pid', $pid);
-		$stmt->bindParam(':sid', $sid);
+		$stmt = $this->pdo->prepare('UPDATE sujet SET premier_post=:post_id WHERE sujet_id=:sujet_id');
+		$stmt->bindParam(':post_id', $post_id);
+		$stmt->bindParam(':sujet_id', $sujet_id);
 	
 		return $stmt->execute();
 	}
 	
 	//Met a jour le dernier dans la table sujet
-	public function updateLastPost($pid, $sid)
+	public function updateLastPost($post_id, $sujet_id)
 	{
-		$stmt = $this->pdo->prepare('UPDATE sujet SET `Dernier post`=:pid WHERE sid=:sid');
-		$stmt->bindParam(':pid', $pid);
-		$stmt->bindParam(':sid', $sid);
+		$stmt = $this->pdo->prepare('UPDATE sujet SET dernier_post=:post_id WHERE sujet_id=:sujet_id');
+		$stmt->bindParam(':post_id', $post_id);
+		$stmt->bindParam(':sujet_id', $sujet_id);
 	
 		return $stmt->execute();
 	}
 	
-	//Met a jour le premier et le dernier post dans la table sujet avec le même identifiant de post, fait pour la création du sujet
-	public function updateLastAndFirstPost($pid, $sid)
+	//Met a jour le premier et le dernier_post dans la table sujet avec le même identifiant de post, fait pour la création du sujet
+	public function updateLastAndFirstPost($post_id, $sujet_id)
 	{
-		$stmt = $this->pdo->prepare('UPDATE sujet SET `Premier post`=:pid, `Dernier post`=:pid WHERE sid=:sid');
-		$stmt->bindParam(':pid', $pid);
-		$stmt->bindParam(':sid', $sid);
+		$stmt = $this->pdo->prepare('UPDATE sujet SET premier_post=:post_id, dernier_post=:post_id WHERE sujet_id=:sujet_id');
+		$stmt->bindParam(':post_id', $post_id);
+		$stmt->bindParam(':sujet_id', $sujet_id);
 	
 		return $stmt->execute();
 	}
 
 	// === USER ===
-	public function getUser($uid) {
-		$stmt = $this->pdo->prepare('SELECT * FROM utilisateur WHERE uid=:uid');
-		$stmt->bindParam(':uid', $uid);
+	public function getUser($utilisateur_id) {
+		$stmt = $this->pdo->prepare('SELECT * FROM utilisateur WHERE utilisateur_id=:utilisateur_id');
+		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
 		$stmt->execute();
 
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 	public function userConnect($pseudo, $mdp) {
-		$stmt = $this->pdo->prepare('SELECT * FROM utilisateur WHERE Pseudonyme=:pseudo AND `Mot de passe`=:mdp LIMIT 1');
+		$stmt = $this->pdo->prepare('SELECT * FROM utilisateur WHERE pseudo=:pseudo AND mdp=:mdp LIMIT 1');
 		$stmt->bindParam(':pseudo', $pseudo);
 		$stmt->bindParam(':mdp', $mdp);
 		$stmt->execute();
@@ -221,7 +221,7 @@ class Requests {
 	}
 
 	public function userExist($pseudo) {
-		$stmt = $this->pdo->prepare('SELECT * FROM utilisateur WHERE Pseudonyme=:pseudo');
+		$stmt = $this->pdo->prepare('SELECT * FROM utilisateur WHERE pseudo=:pseudo');
 		$stmt->bindParam(':pseudo', $pseudo);
 		$stmt->execute();
 
@@ -229,7 +229,7 @@ class Requests {
 	}
 
 	public function mailExist($mail) {
-		$stmt = $this->pdo->prepare('SELECT * FROM utilisateur WHERE Mail=:mail');
+		$stmt = $this->pdo->prepare('SELECT * FROM utilisateur WHERE mail=:mail');
 		$stmt->bindParam(':mail', $mail);
 		$stmt->execute();
 
@@ -238,7 +238,7 @@ class Requests {
 
 	public function addUser($pseudo, $mdp, $mail, $nom, $prenom) {
 		$stmt = $this->pdo->prepare('
-			INSERT INTO utilisateur (Pseudonyme, `Mot de passe`, Mail, `Date d\'inscription`, `Nombre de post`, Administrateur, Nom, Prenom)
+			INSERT INTO utilisateur (pseudo, mdp, mail, `Date d\'inscription`, `Nombre de post`, Administrateur, Nom, Prenom)
 			VALUES (:pseudo, :mdp, :mail, NOW(), 0, 0, :nom, :prenom)
 		');
 		$stmt->bindParam(':pseudo', $pseudo);
@@ -251,21 +251,21 @@ class Requests {
 	}
 	
 	// ==== POST ====
-	public function postExist($pid) {
-		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE pid=:pid');
-		$stmt->bindParam(':pid', $pid);
+	public function postExist($post_id) {
+		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE post_id=:post_id');
+		$stmt->bindParam(':post_id', $post_id);
 		$stmt->execute();
 
 		return !empty($stmt->fetchAll(PDO::FETCH_ASSOC));
 	}
 
-	public function getPost($pid) {
+	public function getPost($post_id) {
 		$stmt = $this->pdo->prepare('
-			SELECT pid, cid, uid, sid, `Date de creation`, Texte, Pseudonyme FROM post
+			SELECT post_id, categorie_id, utilisateur_id, sujet_id, date_creation, Texte, pseudo FROM post
 			NATURAL JOIN utilisateur
-			WHERE pid=:pid
+			WHERE post_id=:post_id
 		');
-		$stmt->bindParam(':pid', $pid);
+		$stmt->bindParam(':post_id', $post_id);
 		$stmt->execute();
 		$res = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -275,57 +275,57 @@ class Requests {
 			return $res[0];
 	}
 
-	public function getPostsBySubject($sid) {
+	public function getPostsBySubject($sujet_id) {
 		$stmt = $this->pdo->prepare('
-			SELECT pid, cid, uid, sid, `Date de creation`, Texte, Pseudonyme FROM post
+			SELECT post_id, categorie_id, utilisateur_id, sujet_id, date_creation, Texte, pseudo FROM post
 			NATURAL JOIN utilisateur
-			WHERE sid=:sid
+			WHERE sujet_id=:sujet_id
 		');
-		$stmt->bindParam(':sid', $sid);
+		$stmt->bindParam(':sujet_id', $sujet_id);
 		$stmt->execute();
 	
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
-	public function addPost($sid, $cid, $uid, $texte) {
+	public function addPost($sujet_id, $categorie_id, $utilisateur_id, $texte) {
 		$stmt = $this->pdo->prepare('
-			INSERT INTO post (sid, cid, uid , `date de creation`, Texte)
-			VALUES (:sid, :cid, :uid, NOW(), :texte)
+			INSERT INTO post (sujet_id, categorie_id, utilisateur_id , date_creation, Texte)
+			VALUES (:sujet_id, :categorie_id, :utilisateur_id, NOW(), :texte)
 		');
-		$stmt->bindParam(':sid', $sid);
-		$stmt->bindParam(':cid', $cid);
-		$stmt->bindParam(':uid', $uid);
+		$stmt->bindParam(':sujet_id', $sujet_id);
+		$stmt->bindParam(':categorie_id', $categorie_id);
+		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
 		$stmt->bindParam(':texte', $texte);
 	
 		return $stmt->execute();
 	}
 
-	public function deletePost($pid) {
-		$stmt = $this->pdo->prepare('DELETE FROM post WHERE pid=:pid');
-		$stmt->bindParam(':pid', $pid);
+	public function deletePost($post_id) {
+		$stmt = $this->pdo->prepare('DELETE FROM post WHERE post_id=:post_id');
+		$stmt->bindParam(':post_id', $post_id);
 
 		return $stmt->execute();
 	}
 
-	public function updatePost($pid, $texte) {
-		$stmt = $this->pdo->prepare('UPDATE post SET `Texte`=:texte WHERE pid=:pid');
+	public function updatePost($post_id, $texte) {
+		$stmt = $this->pdo->prepare('UPDATE post SET `Texte`=:texte WHERE post_id=:post_id');
 		$stmt->bindParam(':texte', $texte);
-		$stmt->bindParam(':pid', $pid);
+		$stmt->bindParam(':post_id', $post_id);
 
 		return $stmt->execute();
 	}
 	
-	//Récupère l'id du dernier post ajouter dans la table post
+	//Récupère l'id du dernier_post ajouter dans la table post
 	public function postLastId() {
 		$stmt = $this->pdo->prepare('
-			SELECT pid FROM post ORDER BY pid DESC LIMIT 1
+			SELECT post_id FROM post ORDER BY post_id DESC LIMIT 1
 		');
 		//Exécute la requête
 		if(!$stmt->execute())//Si la requête est fausse, la suite de la fonction est annulé
 			return false;
 		
 		$lastID = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		return $lastID[0]['pid'];
+		return $lastID[0]['post_id'];
 	}
 }
 
