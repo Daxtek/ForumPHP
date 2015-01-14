@@ -115,6 +115,11 @@ class Requests {
 		try {
 			$this->pdo->beginTransaction();
 
+
+			$stmt= $this->pdo->prepare("SHOW TABLE STATUS LIKE 'sujet'");
+			$stmt->execute();
+			$sujet_id = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['Auto_increment'];
+
 			$stmt= $this->pdo->prepare('
 				INSERT INTO sujet (categorie_id, utilisateur_id, date_creation, titre, ouvert)
 				VALUES (:categorie_id, :utilisateur_id, NOW(), :titre, 1)
@@ -124,8 +129,22 @@ class Requests {
 			$stmt->bindParam(':titre', $titre);
 			$stmt->execute();
 
-			$sujet_id = $this->sujetLastId();
-			$this->addPost($sujet_id, $utilisateur_id, $texte);
+
+			$stmt= $this->pdo->prepare("SHOW TABLE STATUS LIKE 'post'");
+			$stmt->execute();
+			$post_id = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['Auto_increment'];
+
+			$stmt = $this->pdo->prepare('
+				INSERT INTO post (sujet_id, utilisateur_id , date_creation, texte)
+				VALUES (:sujet_id, :utilisateur_id, NOW(), :texte)
+			');
+			$stmt->bindParam(':sujet_id', $sujet_id);
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->bindParam(':texte', $texte);
+			$stmt->execute();
+
+
+			$this->updateLastAndFirstPost($post_id, $sujet_id);
 
 			$this->pdo->commit();
 
@@ -336,7 +355,10 @@ class Requests {
 			$stmt->bindParam(':texte', $texte);
 			$stmt->execute();
 
-			$post_id = $this->postLastId();
+			$stmt= $this->pdo->prepare("SHOW TABLE STATUS LIKE 'post'");
+			$stmt->execute();
+			$post_id = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['Auto_increment'];
+
 			$stmt = $this->pdo->prepare('UPDATE sujet SET dernier_post=:post_id WHERE sujet_id=:sujet_id');
 			$stmt->bindParam(':post_id', $post_id);
 			$stmt->bindParam(':sujet_id', $sujet_id);
@@ -378,6 +400,7 @@ class Requests {
 			return false;
 		
 		$lastID = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 		return $lastID[0]['post_id'];
 	}
 }

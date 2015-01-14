@@ -63,7 +63,7 @@ if (isset( $_GET['cid'] ) && !empty($_GET['cid']) ) // Si l'on accède à la pag
 		{
 			//Ajout du sujet
 			if($Requests->addSujet($categorie_id, $utilisateur_id, $titre, $texte))
-				$messageCreation = 'Le sujet '. $titre .' à été crée !'; //Message de succés
+				$messageCreation = 'Le sujet '. $titre .' a été crée !'; //Message de succès
 			else
 				$errorMessage .= "Il y a eu une erreur le sujet n'a pas été créer, veuillez réessayer\n"; //Message d'erreur
 			
