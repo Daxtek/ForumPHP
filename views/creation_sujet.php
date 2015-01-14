@@ -5,7 +5,7 @@
 			<h1> Formulaire de création de sujet</h1>
 		</header>
 		<form  name="formSujet" action="" method="POST" onsubmit="return verifForm()">
-			<label  for="idtitre"> Titre : </label><input class="form-control" type="text" id="idtitre" name="titre" size="20" maxlength="50" pattern="[A-Z]+[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789 ]{2,}" title="Veuillez renter un titre commencent par une majuscule, taille minimum 3 caractères" required ><br>			
+			<label  for="idtitre"> Titre : </label><input class="form-control" type="text" id="idtitre" name="titre" size="20" maxlength="50" pattern="[A-Z]+[a-zA-Z0-9ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ \W]{2,}" title="Veuillez renter un titre commencent par une majuscule, taille minimum 3 caractères" required ><br>			
 		<div class="row">	
 			<div class="form-group col-lg-8 col-md-8">	
 				<label  for="idtexte"> Texte : </label>
@@ -23,7 +23,7 @@
 			{
 				titre = document.formCreation.titre.value;
 				
-				var reg = new RegExp("^[A-Z]+[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789 ]{2,}$"); /* Pour les accents on est obligés de tous les préciser un par un */
+				var reg = new RegExp("^[A-Z]+[a-zA-Z0-9ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ \W]{2,}$"); /* Pour les accents on est obligés de tous les préciser un par un */
 				if (!reg.test(titre)) 
 				{	
 					alert("le titre n'est pas valide");

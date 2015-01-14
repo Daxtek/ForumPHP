@@ -12,7 +12,7 @@
 				<label for="idemail"> Email : </label><input class="form-control" type="email" id="idemail" name="email" maxlength="100" pattern="[0-9a-z-._]+@[a-z]+[.]+[a-z]{2,3}" title="Veuillez rentrez un email valide" required ><br>
 				<label for="idmdp"> Mot de passe : </label><input class="form-control" type="password" id="idmdp" name="mdp" required ><br>
 				<label for="idmdpConfirmation"> Confirmer le mot de passe : </label><input class="form-control" type="password"  id="idmdpConfirmation" name="mdpConfirmation" required title="Les deux champs doivent correspondre" ><br>
-				<label for="idpseudo"> Pseudonyme : </label><input class="form-control" type="text" id="idpseudo" name="pseudo" size="20" maxlength="20" required pattern="[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789]{2,}" title="Le pseudonyme peut contenir des chiffres et des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" ><br>
+				<label for="idpseudo"> Pseudonyme : </label><input class="form-control" type="text" id="idpseudo" name="pseudo" size="20" maxlength="20" required pattern="[a-zA-Z0-9ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ ]{2,}" title="Le pseudonyme peut contenir des chiffres et des caractères alphabétiques ( accents autorisés), taille minimum 2 caractères" ><br>
 				
 				<input class="btn btn-default" type="submit" value="Valider">
 				<input class="btn btn-default" type="reset" value="Reinitialiser"/> 
@@ -40,7 +40,7 @@
 						alert("le prenom n'est pas valide");
 						return false; //Empeche le submit si les vérifications ne sont pas valides
 					}
-					var reg = new RegExp("^[a-zA-ZÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ123456789]{2,}$"); /* Pour les accents on est obligés de tous les préciser un par un */
+					var reg = new RegExp("^[a-zA-Z0-9ÀÁÂÃÄÅàáâãäåÒÓÔÕÖØòóôõöøÈÉÊËèéêëÇçÌÍÎÏìíîïÙÚÛÜùúûüÿÑñ ]{2,}$"); /* Pour les accents on est obligés de tous les préciser un par un */
 					if (!reg.test(pseudo)) 
 					{	
 						alert("le pseudo n'est pas valide");
