@@ -112,69 +112,53 @@ class Requests {
 	
 	public function addSujet($categorie_id, $utilisateur_id, $titre, $texte)
 	{
-		
-		//$stmt = $this->pdo->beginTransaction();
-		
-		// Requête du sujet
-		$stmt= $this->pdo->prepare('
-			INSERT INTO sujet (categorie_id, utilisateur_id, date_creation, titre, ouvert)
-			VALUES (:categorie_id, :utilisateur_id, NOW(), :titre, 1)
-		');
-		$stmt->bindParam(':categorie_id', $categorie_id);
-		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
-		$stmt->bindParam(':titre', $titre);
-		
-		//Si la requête est fausse, la suite de la fonction est annulé
-		if(!$stmt->execute())
-		{
-			//$stmt->rollback(); //annule
-			return false;
-		}
-		else
-		{
-			//$stmt->commit(); //valide
-		}
-		
-		
-		$sujet_id = $this->sujetLastId();
-		
-		//Ajout le nouveau post dans la table post
-		if(! $this->addPost($sujet_id, $utilisateur_id, $texte)) //Si la requête est fausse, la suite de la fonction est annulé
-		{
-			//$stmt->rollback(); //annule
-			return false;
-		}
-			
+		try {
+			$this->pdo->beginTransaction();
 
-		//Récupère l'id du nouveau sujet
-		$post_id= $this->postLastId();
-		
-		return $this->updateLastAndFirstPost($post_id, $sujet_id);
+			$stmt= $this->pdo->prepare('
+				INSERT INTO sujet (categorie_id, utilisateur_id, date_creation, titre, ouvert)
+				VALUES (:categorie_id, :utilisateur_id, NOW(), :titre, 1)
+			');
+			$stmt->bindParam(':categorie_id', $categorie_id);
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->bindParam(':titre', $titre);
+			$stmt->execute();
+
+			$sujet_id = $this->sujetLastId();
+			$this->addPost($sujet_id, $utilisateur_id, $texte);
+
+			$this->pdo->commit();
+
+			return true;
+		} catch (Exception $e) {
+			$this->pdo->rollBack();
+
+			return false;
+		}
 	}
 
 	public function deleteSujet($sujet_id) {
 		// Comme il y a plusieurs requêtes pour supprimer un sujet on commence une transaction (pour annuler l'auto-commit) et on la valide ou non si il y a des erreurs
-		$this->pdo->beginTransaction();
-		$res = true;
+		try {
+			$this->pdo->beginTransaction();
 
-		$stmt = $this->pdo->prepare('DELETE FROM post WHERE sujet_id=:sujet_id');
-		$stmt->bindParam(':sujet_id', $sujet_id);
-		if ($stmt->execute()) {
+			$stmt = $this->pdo->prepare('DELETE FROM post WHERE sujet_id=:sujet_id');
+			$stmt->bindParam(':sujet_id', $sujet_id);
+			$stmt->execute();
+
 			$stmt = $this->pdo->prepare('DELETE FROM sujet WHERE sujet_id=:sujet_id');
 			$stmt->bindParam(':sujet_id', $sujet_id);
-			if ($stmt->execute())
-				$this->pdo->commit();
-			else {
-				$this->pdo->rollBack();
-				$res = false;
-			}
-		}
-		else {
-			$this->pdo->rollBack();
-			$res = false;
-		}
+			$stmt->execute();
 
-		return $res;
+			$this->pdo->commit();
+
+			return true;
+		}
+		catch (Exception $e) {
+			$this->pdo->rollBack();
+
+			return false;
+		}
 	}
 	
 	//Récupère l'id du dernier sujet ajouter dans la table sujet
@@ -340,34 +324,33 @@ class Requests {
 	}
 	
 	public function addPost($sujet_id, $utilisateur_id, $texte) {
-		$this->pdo->beginTransaction();
-		$res = true;
-		$stmt = $this->pdo->prepare('
-			INSERT INTO post (sujet_id, utilisateur_id , date_creation, texte)
-			VALUES (:sujet_id, :utilisateur_id, NOW(), :texte)
-		');
-		$stmt->bindParam(':sujet_id', $sujet_id);
-		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
-		$stmt->bindParam(':texte', $texte);
-		if ($stmt->execute()) {
-			$stmt = $this->pdo->prepare('UPDATE sujet SET dernier_post=:post_id WHERE sujet_id=:sujet_id');
+		try {
+			$this->pdo->beginTransaction();
+
+			$stmt = $this->pdo->prepare('
+				INSERT INTO post (sujet_id, utilisateur_id , date_creation, texte)
+				VALUES (:sujet_id, :utilisateur_id, NOW(), :texte)
+			');
+			$stmt->bindParam(':sujet_id', $sujet_id);
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->bindParam(':texte', $texte);
+			$stmt->execute();
+
 			$post_id = $this->postLastId();
+			$stmt = $this->pdo->prepare('UPDATE sujet SET dernier_post=:post_id WHERE sujet_id=:sujet_id');
 			$stmt->bindParam(':post_id', $post_id);
 			$stmt->bindParam(':sujet_id', $sujet_id);
-			if ($stmt->execute())
-				$this->pdo->commit();
-			else {
-				$this->pdo->rollBack();
-				$res = false;
-			}
-		}
-		else {
-			$this->pdo->rollBack();
-			$res = false;
-		}
+			$stmt->execute();
 
-	
-		return $res;
+			$this->pdo->commit();
+
+			return true;
+		}
+		catch (Exception $e) {
+			$this->pdo->rollBack();
+
+			return false;
+		}
 	}
 
 	public function deletePost($post_id) {
