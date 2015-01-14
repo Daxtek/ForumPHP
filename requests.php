@@ -11,7 +11,14 @@ class Requests {
 		$this->pdo = $pdo;
 	}
 
+
+
+
+	//===================
 	// === CATÉGORIES ===
+	//===================
+
+
 	public function categorieExist($categorie_id) {
 		$stmt = $this->pdo->prepare('SELECT * FROM categorie WHERE categorie_id=:categorie_id');
 		$stmt->bindParam(':categorie_id', $categorie_id);
@@ -61,7 +68,14 @@ class Requests {
 		return $stmt->execute();
 	}
 
+
+
+
+	//===============
 	// === SUJETS ===
+	//===============
+
+
 	public function sujetExist($sujet_id) {
 		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE sujet_id=:sujet_id');
 		$stmt->bindParam(':sujet_id', $sujet_id);
@@ -136,8 +150,31 @@ class Requests {
 		$post_id= $this->postLastId();
 		
 		return $this->updateLastAndFirstPost($post_id, $sujet_id);
-		
-		
+	}
+
+	public function deleteSujet($sujet_id) {
+		// Comme il y a plusieurs requêtes pour supprimer un sujet on commence une transaction (pour annuler l'auto-commit) et on la valide ou non si il y a des erreurs
+		$this->pdo->beginTransaction();
+		$res = true;
+
+		$stmt = $this->pdo->prepare('DELETE FROM post WHERE sujet_id=:sujet_id');
+		$stmt->bindParam(':sujet_id', $sujet_id);
+		if ($stmt->execute()) {
+			$stmt = $this->pdo->prepare('DELETE FROM suje WHERE sujet_id=:sujet_id');
+			$stmt->bindParam(':sujet_id', $sujet_id);
+			if ($stmt->execute())
+				$this->pdo->commit();
+			else {
+				$this->pdo->rollBack();
+				$res = false;
+			}
+		}
+		else {
+			$this->pdo->rollBack();
+			$res = false;
+		}
+
+		return $res;
 	}
 	
 	//Récupère l'id du dernier sujet ajouter dans la table sujet
@@ -198,7 +235,14 @@ class Requests {
 		return $stmt->execute();
 	}
 
+
+
+
+	//=============
 	// === USER ===
+	//=============
+
+
 	public function getUser($utilisateur_id) {
 		$stmt = $this->pdo->prepare('SELECT * FROM utilisateur WHERE utilisateur_id=:utilisateur_id');
 		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
@@ -250,7 +294,14 @@ class Requests {
 		return $stmt->execute();
 	}
 	
+
+
+
+	//===============
 	// ==== POST ====
+	//===============
+
+
 	public function postExist($post_id) {
 		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE post_id=:post_id');
 		$stmt->bindParam(':post_id', $post_id);
