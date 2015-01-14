@@ -85,7 +85,7 @@ class Requests {
 	}
 
 	public function getSujetsByCategorie($categorie_id) {
-		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE categorie_id=:categorie_id');
+		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE categorie_id=:categorie_id ORDER BY date_creation');
 		$stmt->bindParam(':categorie_id', $categorie_id);
 		$stmt->execute();
 
@@ -160,7 +160,7 @@ class Requests {
 		$stmt = $this->pdo->prepare('DELETE FROM post WHERE sujet_id=:sujet_id');
 		$stmt->bindParam(':sujet_id', $sujet_id);
 		if ($stmt->execute()) {
-			$stmt = $this->pdo->prepare('DELETE FROM suje WHERE sujet_id=:sujet_id');
+			$stmt = $this->pdo->prepare('DELETE FROM sujet WHERE sujet_id=:sujet_id');
 			$stmt->bindParam(':sujet_id', $sujet_id);
 			if ($stmt->execute())
 				$this->pdo->commit();
@@ -331,6 +331,7 @@ class Requests {
 			SELECT post_id, utilisateur_id, sujet_id, date_creation, texte, pseudo FROM post
 			NATURAL JOIN utilisateur
 			WHERE sujet_id=:sujet_id
+			ORDER BY date_creation
 		');
 		$stmt->bindParam(':sujet_id', $sujet_id);
 		$stmt->execute();
@@ -339,6 +340,8 @@ class Requests {
 	}
 	
 	public function addPost($sujet_id, $utilisateur_id, $texte) {
+		$this->pdo->beginTransaction();
+		$res = true;
 		$stmt = $this->pdo->prepare('
 			INSERT INTO post (sujet_id, utilisateur_id , date_creation, texte)
 			VALUES (:sujet_id, :utilisateur_id, NOW(), :texte)
@@ -346,8 +349,25 @@ class Requests {
 		$stmt->bindParam(':sujet_id', $sujet_id);
 		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
 		$stmt->bindParam(':texte', $texte);
+		if ($stmt->execute()) {
+			$stmt = $this->pdo->prepare('UPDATE sujet SET dernier_post=:post_id WHERE sujet_id=:sujet_id');
+			$post_id = $this->postLastId();
+			$stmt->bindParam(':post_id', $post_id);
+			$stmt->bindParam(':sujet_id', $sujet_id);
+			if ($stmt->execute())
+				$this->pdo->commit();
+			else {
+				$this->pdo->rollBack();
+				$res = false;
+			}
+		}
+		else {
+			$this->pdo->rollBack();
+			$res = false;
+		}
+
 	
-		return $stmt->execute();
+		return $res;
 	}
 
 	public function deletePost($post_id) {

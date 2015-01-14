@@ -12,7 +12,9 @@
 				<p><?= $post['texte'] ?></p>
 				<?php if (isset($_SESSION['utilisateur_id']) && ($_SESSION['utilisateur_id'] == $post['utilisateur_id'] || $_SESSION['admin'])): ?>
 					<a class="btn btn-xs btn-default" href="modif_post.php?pid=<?= $post['post_id'] ?>">Modifier</a>
-					<a class="btn btn-xs btn-default" href="suppr_post.php?pid=<?= $post['post_id'] ?>">Supprimer</a>
+					<?php if ($sujet[0]['premier_post'] != $post['post_id']): ?>
+						<a class="btn btn-xs btn-default" href="suppr_post.php?pid=<?= $post['post_id'] ?>">Supprimer</a>
+					<?php endif ?>
 				<?php endif ?>
 			</li>			
 		<?php endforeach ?>
