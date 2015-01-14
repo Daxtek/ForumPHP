@@ -16,6 +16,19 @@ body {
   padding-top:50px
   /* Fin de modification */
 }
+/* Modif */
+.inline
+{
+	display:inline;
+}
+
+.block
+{
+	display:block;
+}
+
+/*Fin Modif */
+
 article,
 aside,
 details,
@@ -3023,6 +3036,9 @@ fieldset[disabled] .btn-info.active {
   color: #fff;
   background-color: #f0ad4e;
   border-color: #eea236;
+  /**modification dieudonné loic */
+  margin-top:5px;
+  /* fin de modif */
 }
 .btn-warning:hover,
 .btn-warning:focus,

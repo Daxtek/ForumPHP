@@ -36,6 +36,12 @@ if (isset ($_POST ['SujetAReouvrirID']) && !empty ( $_POST ['SujetAReouvrirID'] 
 	}
 }
 
+if (isset ($_POST ['suppr']) && !empty ( $_POST ['suppr'] ))
+{
+	header('./suppr_sujet.php?sid='.$_POST ['suppr']);
+}
+
+
 $titlePage = 'ForumPHP';
 
 include 'views/template/header.php';

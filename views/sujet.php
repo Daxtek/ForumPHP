@@ -8,7 +8,7 @@
 		<!--Mettre les posts ici -->
 		<?php foreach ($posts as $postsKey => $post): ?>
 			<li class="list-group-item">
-				<h4><?= $post['pseudo'] ?> posté le <?= $post['date_creation'] ?></h4>
+				<h4><?= $post['pseudo'] ?> a posté le <?= $post['date_creation'] ?></h4>
 				<p><?= $post['texte'] ?></p>
 				<?php if (isset($_SESSION['utilisateur_id']) && ($_SESSION['utilisateur_id'] == $post['utilisateur_id'] || $_SESSION['admin'])): ?>
 					<a class="btn btn-xs btn-default" href="modif_post.php?pid=<?= $post['post_id'] ?>">Modifier</a>

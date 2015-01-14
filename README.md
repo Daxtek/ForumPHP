@@ -1,6 +1,5 @@
 Reste à faire:
---
-	- Voir comment fonction le commit/rollback pour l'annulation complète de la fonction add
+-- 
 	- Bien tout remettre au propore et commenté
 	
 Diagrammes
