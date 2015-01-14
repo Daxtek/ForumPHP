@@ -11,7 +11,14 @@ class Requests {
 		$this->pdo = $pdo;
 	}
 
+
+
+
+	//===================
 	// === CATÉGORIES ===
+	//===================
+
+
 	public function categorieExist($categorie_id) {
 		$stmt = $this->pdo->prepare('SELECT * FROM categorie WHERE categorie_id=:categorie_id');
 		$stmt->bindParam(':categorie_id', $categorie_id);
@@ -61,7 +68,14 @@ class Requests {
 		return $stmt->execute();
 	}
 
+
+
+
+	//===============
 	// === SUJETS ===
+	//===============
+
+
 	public function sujetExist($sujet_id) {
 		$stmt = $this->pdo->prepare('SELECT * FROM sujet WHERE sujet_id=:sujet_id');
 		$stmt->bindParam(':sujet_id', $sujet_id);
@@ -99,7 +113,7 @@ class Requests {
 	public function addSujet($categorie_id, $utilisateur_id, $titre, $texte)
 	{
 		
-		//$stmt = $this->pdo->beginTransaction();
+		$this->pdo->beginTransaction();
 		
 		// Requête du sujet
 		$stmt= $this->pdo->prepare('
@@ -113,12 +127,8 @@ class Requests {
 		//Si la requête est fausse, la suite de la fonction est annulé
 		if(!$stmt->execute())
 		{
-			//$stmt->rollback(); //annule
+			$this->pdo->rollBack(); //annule
 			return false;
-		}
-		else
-		{
-			//$stmt->commit(); //valide
 		}
 		
 		
@@ -127,7 +137,7 @@ class Requests {
 		//Ajout le nouveau post dans la table post
 		if(! $this->addPost($sujet_id, $utilisateur_id, $texte)) //Si la requête est fausse, la suite de la fonction est annulé
 		{
-			//$stmt->rollback(); //annule
+			$this->pdo->rollBack(); //annule
 			return false;
 		}
 			
@@ -135,9 +145,38 @@ class Requests {
 		//Récupère l'id du nouveau sujet
 		$post_id= $this->postLastId();
 		
-		return $this->updateLastAndFirstPost($post_id, $sujet_id);
-		
-		
+		if( $this->updateLastAndFirstPost($post_id, $sujet_id))
+		{
+			$this->pdo->commit(); //valide
+			return true;
+		}
+		else
+			return false;
+	}
+
+	public function deleteSujet($sujet_id) {
+		// Comme il y a plusieurs requêtes pour supprimer un sujet on commence une transaction (pour annuler l'auto-commit) et on la valide ou non si il y a des erreurs
+		$this->pdo->beginTransaction();
+		$res = true;
+
+		$stmt = $this->pdo->prepare('DELETE FROM post WHERE sujet_id=:sujet_id');
+		$stmt->bindParam(':sujet_id', $sujet_id);
+		if ($stmt->execute()) {
+			$stmt = $this->pdo->prepare('DELETE FROM sujet WHERE sujet_id=:sujet_id');
+			$stmt->bindParam(':sujet_id', $sujet_id);
+			if ($stmt->execute())
+				$this->pdo->commit();
+			else {
+				$this->pdo->rollBack();
+				$res = false;
+			}
+		}
+		else {
+			$this->pdo->rollBack();
+			$res = false;
+		}
+
+		return $res;
 	}
 	
 	//Récupère l'id du dernier sujet ajouter dans la table sujet
@@ -198,7 +237,14 @@ class Requests {
 		return $stmt->execute();
 	}
 
+
+
+
+	//=============
 	// === USER ===
+	//=============
+
+
 	public function getUser($utilisateur_id) {
 		$stmt = $this->pdo->prepare('SELECT * FROM utilisateur WHERE utilisateur_id=:utilisateur_id');
 		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
@@ -250,7 +296,14 @@ class Requests {
 		return $stmt->execute();
 	}
 	
+
+
+
+	//===============
 	// ==== POST ====
+	//===============
+
+
 	public function postExist($post_id) {
 		$stmt = $this->pdo->prepare('SELECT * FROM post WHERE post_id=:post_id');
 		$stmt->bindParam(':post_id', $post_id);

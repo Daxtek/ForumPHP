@@ -14,7 +14,7 @@
 				<!-- Affichage des sujets -->
 				<?php foreach ($categorie['sujets'] as $sujetKey => $sujet): ?>
 					<?php if (isset($_SESSION['admin']) && $_SESSION['admin'] == '1'): ?> <!-- Si l'utilisateur est connecté et que c'est un administrateur -->
-						<?php if ($sujet['ouvert']== '1' ):?> <!-- Si le sujet est ouvert -->
+						<?php if ($sujet['ouvert'] == '1' ):?> <!-- Si le sujet est ouvert -->
 							<a href="sujet.php?sid=<?= $sujet['sujet_id'] ?>" class="list-group-item col-lg-10"> 
 								<h4><?= $sujet['titre']?> :</h4>
 								<p><?= $sujet['dernier_post']['texte']?></p> <!-- Afficher le dernier post -->
@@ -25,7 +25,7 @@
 									<button type="submit" class="btn btn-warning"> Fermez le sujet </button>
 								</div>
 							</form> 
-						<?php elseif ($sujet['ouvert']== '0'):?> <!-- Si le sujet est fermé  -->
+						<?php elseif ($sujet['ouvert'] == '0'):?> <!-- Si le sujet est fermé  -->
 							<li class="list-group-item col-lg-10 disabled"> 
 								<h4><?= $sujet['titre']?> :</h4>
 								<p> <?= $sujet['dernier_post']['texte']?></p> <!-- Afficher le dernier post --> 		
@@ -37,13 +37,14 @@
 								</div>
 							</form>		
 						<?php endif;?>
+						<a class="btn btn-warning" href="./suppr_sujet.php?sid=<?= $sujet['sujet_id'] ?>">Supprimer</a>
 					<?php else:?> 
-						<?php if ($sujet['ouvert']== '1' ):?> <!-- Si le sujet est ouvert -->
+						<?php if ($sujet['ouvert'] == '1' ):?> <!-- Si le sujet est ouvert -->
 							<a href="sujet.php?sid=<?= $sujet['sujet_id'] ?>" class="list-group-item "> 
 								<h4><?= $sujet['titre']?> :</h4>
 								<p> <?= $sujet['dernier_post']['texte']?> </p> <!-- Afficher le dernier post -->
 							</a>
-						<?php elseif ($sujet['ouvert']== '0' ):?> <!-- Si le sujet est fermé -->
+						<?php elseif ($sujet['ouvert'] == '0' ):?> <!-- Si le sujet est fermé -->
 							<li class="list-group-item disabled" > 
 								<h4><?= $sujet['titre']?> :</h4>
 								<p> <?= $sujet['dernier_post']['texte']?></p> <!-- Afficher le dernier post -->	
