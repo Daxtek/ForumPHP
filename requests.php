@@ -297,6 +297,20 @@ class Requests {
 		return $stmt->execute();
 	}
 	
+	public function updateUser($pseudo, $mdp, $mail, $nom, $prenom, $utilisateur_id){
+		$stmt = $this->pdo->prepare('
+			UPDATE utilisateur SET pseudo=:pseudo, mdp=:mdp, mail=:mail, nom=:nom, prenom=:prenom  WHERE utilisateur_id=:utilisateur_id
+		');
+		$stmt->bindParam(':pseudo', $pseudo);
+		$stmt->bindParam(':mdp', $mdp);
+		$stmt->bindParam(':mail', $mail);
+		$stmt->bindParam(':nom', $nom);
+		$stmt->bindParam(':prenom', $prenom);
+		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+		
+		return $stmt->execute();
+	}
+	
 
 
 

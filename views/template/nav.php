@@ -16,12 +16,15 @@
 							<a class="btn btn-primary" href="inscription.php">Inscription</a>
 						</form>
 					<?php else: ?> <!-- Si la personne est connecté -->
-						<?php if(($_SESSION['admin']) == '1'): ?> <!--  Si la personne qui est connecté est pas un administrateur alors elle peut accéder aux rubriques qui suivent -->
-							<ul class="nav navbar-nav">
+						<ul class="nav navbar-nav">
+							<li><a href="profil.php"> Profil </a>
+						<?php if(($_SESSION['admin']) == '1'): ?> <!--  Si la personne qui est connecté est pas  administrateur alors elle peut accéder aux rubriques qui suivent -->
+							
 								<li><a  href="inscription.php"> Inscrire un nouvel utilisateur </a></li>
 								<li><a  href="creation_categorie.php"> Créer Catégorie </a></li>
-							</ul>
+							
 						<?php endif; ?>
+						</ul>
 						<a class="btn btn-primary navbar-btn navbar-right" href="deconnexion.php"> Deconnexion </a>
 					<?php endif; ?>
 				</div>
