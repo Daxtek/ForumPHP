@@ -142,6 +142,22 @@ class Requests {
 			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
 			$stmt->bindParam(':texte', $texte);
 			$stmt->execute();
+			
+			//Récupération du nombre de post de l'utilisateur
+			$stmt = $this->pdo->prepare('SELECT nb_posts FROM utilisateur WHERE utilisateur_id=:utilisateur_id');
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->execute();
+				
+			$nb_posts = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['nb_posts'];
+				
+				
+			//Update du nombre de post
+			$nb_posts += 1;
+				
+			$stmt = $this->pdo->prepare('UPDATE utilisateur SET nb_posts=:nb_posts WHERE utilisateur_id=:utilisateur_id');
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->bindParam(':nb_posts', $nb_posts);
+			$stmt->execute();
 
 
 			$this->updateLastAndFirstPost($post_id, $sujet_id);
@@ -376,6 +392,23 @@ class Requests {
 			$stmt = $this->pdo->prepare('UPDATE sujet SET dernier_post=:post_id WHERE sujet_id=:sujet_id');
 			$stmt->bindParam(':post_id', $post_id);
 			$stmt->bindParam(':sujet_id', $sujet_id);
+			$stmt->execute();
+			
+			
+			//Récupération du nombre de post de l'utilisateur
+			$stmt = $this->pdo->prepare('SELECT nb_posts FROM utilisateur WHERE utilisateur_id=:utilisateur_id');
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->execute();
+			
+			$nb_posts = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['nb_posts'];
+			
+			
+			//Update du nombre de post
+			$nb_posts += 1;
+			
+			$stmt = $this->pdo->prepare('UPDATE utilisateur SET nb_posts=:nb_posts WHERE utilisateur_id=:utilisateur_id');
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->bindParam(':nb_posts', $nb_posts);
 			$stmt->execute();
 
 			$this->pdo->commit();

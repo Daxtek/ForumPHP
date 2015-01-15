@@ -74,9 +74,12 @@ if(isset($_SESSION['utilisateur_id']) && !empty($_SESSION['utilisateur_id']))
 					
 						$messageModification ='Votre profil a bien été modifié '. $pseudo;
 						header('Location: ./profil.php'); //Actualisation de la page profil
+						
 				}
 				else
 					$errorMessage .= "Une erreur est survenu lors de la modification ...";
+				
+				
 			}
 			
 		}
