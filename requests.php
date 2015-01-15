@@ -142,6 +142,22 @@ class Requests {
 			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
 			$stmt->bindParam(':texte', $texte);
 			$stmt->execute();
+			
+			//Récupération du nombre de post de l'utilisateur
+			$stmt = $this->pdo->prepare('SELECT nb_posts FROM utilisateur WHERE utilisateur_id=:utilisateur_id');
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->execute();
+				
+			$nb_posts = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['nb_posts'];
+				
+				
+			//Update du nombre de post
+			$nb_posts += 1;
+				
+			$stmt = $this->pdo->prepare('UPDATE utilisateur SET nb_posts=:nb_posts WHERE utilisateur_id=:utilisateur_id');
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->bindParam(':nb_posts', $nb_posts);
+			$stmt->execute();
 
 
 			$this->updateLastAndFirstPost($post_id, $sujet_id);
@@ -297,6 +313,20 @@ class Requests {
 		return $stmt->execute();
 	}
 	
+	public function updateUser($pseudo, $mdp, $mail, $nom, $prenom, $utilisateur_id){
+		$stmt = $this->pdo->prepare('
+			UPDATE utilisateur SET pseudo=:pseudo, mdp=:mdp, mail=:mail, nom=:nom, prenom=:prenom  WHERE utilisateur_id=:utilisateur_id
+		');
+		$stmt->bindParam(':pseudo', $pseudo);
+		$stmt->bindParam(':mdp', $mdp);
+		$stmt->bindParam(':mail', $mail);
+		$stmt->bindParam(':nom', $nom);
+		$stmt->bindParam(':prenom', $prenom);
+		$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+		
+		return $stmt->execute();
+	}
+	
 
 
 
@@ -346,6 +376,11 @@ class Requests {
 		try {
 			$this->pdo->beginTransaction();
 
+			//Increment le post
+			$stmt= $this->pdo->prepare("SHOW TABLE STATUS LIKE 'post'");
+			$stmt->execute();
+			$post_id = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['Auto_increment'];
+			
 			$stmt = $this->pdo->prepare('
 				INSERT INTO post (sujet_id, utilisateur_id , date_creation, texte)
 				VALUES (:sujet_id, :utilisateur_id, NOW(), :texte)
@@ -355,13 +390,28 @@ class Requests {
 			$stmt->bindParam(':texte', $texte);
 			$stmt->execute();
 
-			$stmt= $this->pdo->prepare("SHOW TABLE STATUS LIKE 'post'");
-			$stmt->execute();
-			$post_id = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['Auto_increment'];
+						
 
 			$stmt = $this->pdo->prepare('UPDATE sujet SET dernier_post=:post_id WHERE sujet_id=:sujet_id');
 			$stmt->bindParam(':post_id', $post_id);
 			$stmt->bindParam(':sujet_id', $sujet_id);
+			$stmt->execute();
+			
+			
+			//Récupération du nombre de post de l'utilisateur
+			$stmt = $this->pdo->prepare('SELECT nb_posts FROM utilisateur WHERE utilisateur_id=:utilisateur_id');
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->execute();
+			
+			$nb_posts = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['nb_posts'];
+			
+			
+			//Update du nombre de post
+			$nb_posts += 1;
+			
+			$stmt = $this->pdo->prepare('UPDATE utilisateur SET nb_posts=:nb_posts WHERE utilisateur_id=:utilisateur_id');
+			$stmt->bindParam(':utilisateur_id', $utilisateur_id);
+			$stmt->bindParam(':nb_posts', $nb_posts);
 			$stmt->execute();
 
 			$this->pdo->commit();
