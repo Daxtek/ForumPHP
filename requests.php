@@ -376,6 +376,11 @@ class Requests {
 		try {
 			$this->pdo->beginTransaction();
 
+			//Increment le post
+			$stmt= $this->pdo->prepare("SHOW TABLE STATUS LIKE 'post'");
+			$stmt->execute();
+			$post_id = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['Auto_increment'];
+			
 			$stmt = $this->pdo->prepare('
 				INSERT INTO post (sujet_id, utilisateur_id , date_creation, texte)
 				VALUES (:sujet_id, :utilisateur_id, NOW(), :texte)
@@ -385,9 +390,7 @@ class Requests {
 			$stmt->bindParam(':texte', $texte);
 			$stmt->execute();
 
-			$stmt= $this->pdo->prepare("SHOW TABLE STATUS LIKE 'post'");
-			$stmt->execute();
-			$post_id = $stmt->fetchAll(PDO::FETCH_ASSOC)[0]['Auto_increment'];
+						
 
 			$stmt = $this->pdo->prepare('UPDATE sujet SET dernier_post=:post_id WHERE sujet_id=:sujet_id');
 			$stmt->bindParam(':post_id', $post_id);
