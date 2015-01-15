@@ -1,6 +1,3 @@
-Reste à faire:
--- 
-	- Bien tout remettre au propore et commenté
 	
 Diagrammes
 --	
