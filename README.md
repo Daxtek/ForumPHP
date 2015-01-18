@@ -1,16 +1,19 @@
-	
-Diagrammes premier jets
+		
+Diagrammes finaux et tables de la base de donnée
 --	
 
-Use case diagram :
-![Alt text](\Diagrammes/UseCaseScreenShot.png?raw=true "Use case diagram")
+Diagramme de use case d'un visiteur :
+![Alt text](\Diagrammes/Diagrammes_Fin/UseCase_Visiteur.png?raw=true "Use case visiteur")
+
+Diagramme de use case des utilisateurs et administrateurs :
+![Alt text](\Diagrammes/Diagrammes_Fin/UseCase_Utilisateur_Administrateur.png?raw=true "Use case utilisateur/administrateur")
 
 Tables de la BDD :
 
-![Alt text](\Diagrammes/Tables_Catégorie.png?raw=true "Tables Catégorie")
+![Alt text](\Diagrammes/Diagrammes_Fin/Table_categorie.png?raw=true "Table categorie")
 
-![Alt text](\Diagrammes/Tables_Post.png?raw=true "Tables Post")
+![Alt text](\Diagrammes/Diagrammes_Fin/Table_post.png?raw=true "Table post")
 
-![Alt text](\Diagrammes/Tables_Sujet.png?raw=true "Tables Sujet")
+![Alt text](\Diagrammes/Diagrammes_Fin/Table_sujet.png?raw=true "Table sujet")
 
-![Alt text](\Diagrammes/Tables_Utilisateurs.png?raw=true "Tables Utilisateurs")
+![Alt text](\Diagrammes/Diagrammes_Fin/Table_utilisateur.png?raw=true "Table utilisateur")
